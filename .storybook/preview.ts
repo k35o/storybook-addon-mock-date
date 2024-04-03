@@ -12,6 +12,7 @@ const preview: Preview = {
         date: /Date$/,
       },
     },
+    mockingDate: new Date(2024, 0, 1),
   },
 };
 

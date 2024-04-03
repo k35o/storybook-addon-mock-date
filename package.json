@@ -24,7 +24,6 @@
       "import": "./dist/preview.js",
       "require": "./dist/preview.cjs"
     },
-    "./preset": "./dist/preset.cjs",
     "./manager": "./dist/manager.js",
     "./package.json": "./package.json"
   },
@@ -41,11 +40,11 @@
     "start": "run-p build:watch 'storybook --quiet'",
     "prerelease": "zx scripts/prepublish-checks.js",
     "release": "npm run build && auto shipit",
-    "eject-ts": "zx scripts/eject-typescript.js",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
   "devDependencies": {
+    "@sinonjs/fake-timers": "^11.2.2",
     "@storybook/addon-essentials": "8.0.0",
     "@storybook/addon-interactions": "8.0.0",
     "@storybook/addon-links": "8.0.0",
@@ -65,6 +64,7 @@
     "@types/node": "^18.15.0",
     "@types/react": "^18.2.65",
     "@types/react-dom": "^18.2.21",
+    "@types/sinonjs__fake-timers": "^8.1.5",
     "@vitejs/plugin-react": "^4.2.1",
     "auto": "^11.1.1",
     "boxen": "^7.1.1",
