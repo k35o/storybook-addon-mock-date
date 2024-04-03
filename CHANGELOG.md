@@ -1,3 +1,16 @@
+# v0.4.1 (Wed Apr 03 2024)
+
+#### 🐛 Bug Fix
+
+- patch [#3](https://github.com/k35o/storybook-addon-mock-date/pull/3) ([@k35o](https://github.com/k35o))
+- patch [#2](https://github.com/k35o/storybook-addon-mock-date/pull/2) ([@k35o](https://github.com/k35o))
+
+#### Authors: 1
+
+- k8o ([@k35o](https://github.com/k35o))
+
+---
+
 # v0.4.0 (Wed Apr 03 2024)
 
 #### 🚀 Enhancement
