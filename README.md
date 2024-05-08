@@ -6,7 +6,7 @@
 First, install the package.
 
 ```sh
-npm install --save-dev storybook-addon-mocking-date
+npm install --save-dev storybook-addon-mock-date
 ```
 
 Then, register it as an addon in `.storybook/main.js`.
