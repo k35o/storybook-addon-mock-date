@@ -1,3 +1,16 @@
+# v0.4.3 (Fri May 10 2024)
+
+#### 🐛 Bug Fix
+
+- Update README.md [#5](https://github.com/k35o/storybook-addon-mock-date/pull/5) ([@alexwalpole](https://github.com/alexwalpole) [@k35o](https://github.com/k35o))
+
+#### Authors: 2
+
+- Alex Walpole ([@alexwalpole](https://github.com/alexwalpole))
+- k8o ([@k35o](https://github.com/k35o))
+
+---
+
 # v0.4.1 (Wed Apr 03 2024)
 
 #### 🐛 Bug Fix
