@@ -6,7 +6,7 @@
 First, install the package.
 
 ```sh
-npm install --save-dev storybook-addon-mocking-date
+npm install --save-dev storybook-addon-mock-date
 ```
 
 Then, register it as an addon in `.storybook/main.js`.
@@ -21,7 +21,7 @@ const config: StorybookConfig = {
   // ...rest of config
   addons: [
     '@storybook/addon-essentials'
-    'storybook-addon-mocking-date', // 👈 register the addon here
+    'storybook-addon-mock-date', // 👈 register the addon here
   ],
 };
 
