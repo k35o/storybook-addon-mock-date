@@ -21,7 +21,7 @@ const config: StorybookConfig = {
   // ...rest of config
   addons: [
     '@storybook/addon-essentials'
-    'storybook-addon-mocking-date', // 👈 register the addon here
+    'storybook-addon-mock-date', // 👈 register the addon here
   ],
 };
 
