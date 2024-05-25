@@ -1,3 +1,22 @@
+# v0.5.0 (Sat May 25 2024)
+
+#### 🚀 Enhancement
+
+- consider situations where mockingdate is not set [#7](https://github.com/k35o/storybook-addon-mock-date/pull/7) ([@k35o](https://github.com/k35o))
+
+#### 🐛 Bug Fix
+
+- empty [#9](https://github.com/k35o/storybook-addon-mock-date/pull/9) ([@k35o](https://github.com/k35o))
+- add write contents persissions [#8](https://github.com/k35o/storybook-addon-mock-date/pull/8) ([@k35o](https://github.com/k35o))
+- Update README.md [#5](https://github.com/k35o/storybook-addon-mock-date/pull/5) ([@alexwalpole](https://github.com/alexwalpole) [@k35o](https://github.com/k35o))
+
+#### Authors: 2
+
+- Alex Walpole ([@alexwalpole](https://github.com/alexwalpole))
+- k8o ([@k35o](https://github.com/k35o))
+
+---
+
 # v0.4.1 (Wed Apr 03 2024)
 
 #### 🐛 Bug Fix
