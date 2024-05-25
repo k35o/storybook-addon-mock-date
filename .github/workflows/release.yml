@@ -1,8 +1,6 @@
 name: Release
 
 on: [push]
-permissions:
-  contents: write
 
 jobs:
   release:
