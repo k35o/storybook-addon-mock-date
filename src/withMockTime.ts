@@ -2,7 +2,7 @@ import type {
   Renderer,
   PartialStoryFn,
   StoryContext,
-} from "@storybook/types";
+} from "storybook/internal/types";
 import FakeTimers from "@sinonjs/fake-timers";
 
 const now = new Date();
@@ -10,7 +10,7 @@ let clock: FakeTimers.Clock | undefined;
 
 export const withMockTime = (
   StoryFn: PartialStoryFn<Renderer>,
-  context: StoryContext<Renderer>
+  context: StoryContext<Renderer>,
 ) => {
   const mockingDate = context.parameters.mockingDate;
 
@@ -31,4 +31,4 @@ export const withMockTime = (
   }
 
   return StoryFn(context);
-}
+};

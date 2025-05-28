@@ -1,11 +1,18 @@
 import { defineConfig, type Options } from "tsup";
 import { readFile } from "fs/promises";
-import { globalPackages as globalManagerPackages } from "@storybook/manager/globals";
-import { globalPackages as globalPreviewPackages } from "@storybook/preview/globals";
+import { globalPackages as globalManagerPackages } from "storybook/internal/manager/globals";
+import { globalPackages as globalPreviewPackages } from "storybook/internal/preview/globals";
 
-// The current browsers supported by Storybook v7
-const BROWSER_TARGET: Options['target'] = ["chrome100", "safari15", "firefox91"];
-const NODE_TARGET: Options['target'] = ["node18"];
+// The current browsers supported by Storybook v9
+const BROWSER_TARGET: Options["target"] = [
+  "chrome131",
+  "edge134",
+  "firefox136",
+  "safari18.3",
+  "ios18.3",
+  "opera117",
+];
+const NODE_TARGET: Options["target"] = ["node20"];
 
 type BundlerConfig = {
   bundler?: {
@@ -26,7 +33,9 @@ export default defineConfig(async (options) => {
   //     "previewEntries": ["./src/preview.ts"]
   //   }
   // }
-  const packageJson = await readFile('./package.json', 'utf8').then(JSON.parse) as BundlerConfig;
+  const packageJson = (await readFile("./package.json", "utf8").then(
+    JSON.parse,
+  )) as BundlerConfig;
   const {
     bundler: {
       exportEntries = [],

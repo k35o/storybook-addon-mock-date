@@ -1,6 +1,6 @@
 {
   "name": "storybook-addon-mock-date",
-  "version": "0.4.2",
+  "version": "0.5.0",
   "description": "Storybook addon to mocking date",
   "keywords": [
     "storybook-addons",
@@ -44,41 +44,44 @@
     "build-storybook": "storybook build"
   },
   "devDependencies": {
-    "@sinonjs/fake-timers": "^11.2.2",
-    "@storybook/addon-essentials": "8.0.0",
-    "@storybook/addon-interactions": "8.0.0",
-    "@storybook/addon-links": "8.0.0",
-    "@storybook/blocks": "8.0.0",
-    "@storybook/components": "8.0.0",
-    "@storybook/core-events": "8.0.0",
-    "@storybook/icons": "^1.2.9",
-    "@storybook/manager": "8.0.0",
-    "@storybook/manager-api": "8.0.0",
-    "@storybook/preview": "8.0.0",
-    "@storybook/preview-api": "8.0.0",
-    "@storybook/react": "8.0.0",
-    "@storybook/react-vite": "8.0.0",
-    "@storybook/test": "8.0.0",
-    "@storybook/theming": "8.0.0",
-    "@storybook/types": "8.0.0",
-    "@types/node": "^18.15.0",
-    "@types/react": "^18.2.65",
-    "@types/react-dom": "^18.2.21",
+    "@sinonjs/fake-timers": "^14.0.0",
+    "@storybook/addon-docs": "next",
+    "@storybook/addon-links": "next",
+    "@storybook/blocks": "next",
+    "@storybook/components": "next",
+    "@storybook/core-events": "next",
+    "@storybook/icons": "^1.4.0",
+    "@storybook/manager": "next",
+    "@storybook/preview": "next",
+    "@storybook/react": "next",
+    "@storybook/react-vite": "next",
+    "@storybook/test": "next",
+    "@storybook/theming": "next",
+    "@storybook/types": "next",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
     "@types/sinonjs__fake-timers": "^8.1.5",
     "@vitejs/plugin-react": "^4.2.1",
     "auto": "^11.1.1",
-    "boxen": "^7.1.1",
+    "boxen": "^8.0.1",
     "dedent": "^1.5.1",
     "npm-run-all": "^4.1.5",
     "prettier": "^3.2.5",
     "prompts": "^2.4.2",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "storybook": "8.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "storybook": "next",
     "tsup": "^8.0.2",
     "typescript": "^5.4.2",
-    "vite": "^5.1.6",
-    "zx": "^7.2.3"
+    "vite": "^6.3.5",
+    "zx": "^8.5.4"
+  },
+  "peerDependencies": {
+    "storybook": "^9.0.0"
+  },
+  "dependencies": {
+    "util": "^0.12.5"
   },
   "publishConfig": {
     "access": "public"
@@ -100,15 +103,7 @@
   "storybook": {
     "displayName": "Mocking Date",
     "supportedFrameworks": [
-      "react",
-      "vue",
-      "angular",
-      "web-components",
-      "ember",
-      "html",
-      "svelte",
-      "preact",
-      "react-native"
+      "supported-frameworks"
     ],
     "icon": "https://user-images.githubusercontent.com/321738/63501763-88dbf600-c4cc-11e9-96cd-94adadc2fd72.png"
   }
