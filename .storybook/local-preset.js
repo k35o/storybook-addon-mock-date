@@ -1,15 +1,10 @@
 /**
  * to load the built addon in this test Storybook
  */
-function previewAnnotations(entry = []) {
-  return [...entry, require.resolve("../dist/preview.js")];
+export function previewAnnotations(entry = []) {
+  return [...entry, new URL("../dist/preview.js", import.meta.url).pathname];
 }
 
-function managerEntries(entry = []) {
-  return [...entry, require.resolve("../dist/manager.js")];
+export function managerEntries(entry = []) {
+  return [...entry, new URL("../dist/manager.js", import.meta.url).pathname];
 }
-
-module.exports = {
-  managerEntries,
-  previewAnnotations,
-};
