@@ -1,6 +1,6 @@
 {
   "name": "storybook-addon-mock-date",
-  "version": "0.5.0",
+  "version": "0.8.0",
   "description": "Storybook addon to mocking date",
   "keywords": [
     "storybook-addons",
