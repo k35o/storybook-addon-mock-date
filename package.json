@@ -48,20 +48,11 @@
   },
   "devDependencies": {
     "@sinonjs/fake-timers": "^14.0.0",
-    "@storybook/addon-docs": "next",
-    "@storybook/addon-links": "next",
-    "@storybook/blocks": "next",
-    "@storybook/components": "next",
-    "@storybook/core-events": "next",
+    "@storybook/addon-docs": "9.0.0-rc.5",
+    "@storybook/addon-links": "9.0.0-rc.5",
     "@storybook/icons": "^1.4.0",
-    "@storybook/manager": "next",
-    "@storybook/preview": "next",
-    "@storybook/react": "next",
-    "@storybook/react-vite": "next",
-    "@storybook/test": "next",
-    "@storybook/theming": "next",
-    "@storybook/types": "next",
-    "@types/node": "^22.0.0",
+    "@storybook/react-vite": "9.0.0-rc.5",
+    "@types/node": "^22.15.23",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@types/sinonjs__fake-timers": "^8.1.5",
@@ -74,7 +65,7 @@
     "prompts": "^2.4.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "storybook": "next",
+    "storybook": "9.0.0-rc.5",
     "tsup": "^8.0.2",
     "typescript": "^5.4.2",
     "vite": "^6.3.5",
@@ -109,5 +100,8 @@
       "supported-frameworks"
     ],
     "icon": "https://user-images.githubusercontent.com/321738/63501763-88dbf600-c4cc-11e9-96cd-94adadc2fd72.png"
+  },
+  "overrides": {
+    "storybook": "$storybook"
   }
 }
