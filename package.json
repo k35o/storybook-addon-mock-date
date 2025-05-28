@@ -27,6 +27,9 @@
     "./manager": "./dist/manager.js",
     "./package.json": "./package.json"
   },
+  "engines": {
+    "node": "22.16.0"
+  },
   "files": [
     "dist/**/*",
     "README.md",
