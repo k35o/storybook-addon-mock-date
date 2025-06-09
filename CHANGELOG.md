@@ -1,3 +1,15 @@
+# v0.10.1 (Mon Jun 09 2025)
+
+#### 🐛 Bug Fix
+
+- downgrade to node >= 20 as storybook [#16](https://github.com/k35o/storybook-addon-mock-date/pull/16) ([@KuSh](https://github.com/KuSh))
+
+#### Authors: 1
+
+- Nicolas Le Cam ([@KuSh](https://github.com/KuSh))
+
+---
+
 # v0.5.0 (Wed May 28 2025)
 
 #### 🚀 Enhancement
