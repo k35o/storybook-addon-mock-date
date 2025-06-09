@@ -1,5 +1,11 @@
 # v0.5.0 (Wed May 28 2025)
 
+## 1.0.0
+
+### Major Changes
+
+- [#20](https://github.com/k35o/storybook-addon-mock-date/pull/20) [`f399c4e`](https://github.com/k35o/storybook-addon-mock-date/commit/f399c4e53c3bdbf07efd2a0a3ebc01f3872c0d71) Thanks [@k35o](https://github.com/k35o)! - Major Release
+
 #### 🚀 Enhancement
 
 - feat: Port addon to Storybook 9 [#11](https://github.com/k35o/storybook-addon-mock-date/pull/11) ([@Sidnioulz](https://github.com/Sidnioulz) [@k35o](https://github.com/k35o))
