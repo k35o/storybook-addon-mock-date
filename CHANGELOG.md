@@ -1,5 +1,13 @@
 # v0.5.0 (Wed May 28 2025)
 
+## 1.0.1
+
+### Patch Changes
+
+- [#23](https://github.com/k35o/storybook-addon-mock-date/pull/23) [`5696b1b`](https://github.com/k35o/storybook-addon-mock-date/commit/5696b1b855ac2316adbe470b30e86f648898b3f5) Thanks [@KuSh](https://github.com/KuSh)! - Move util to dev dependencies
+
+- [#24](https://github.com/k35o/storybook-addon-mock-date/pull/24) [`30853cc`](https://github.com/k35o/storybook-addon-mock-date/commit/30853cc2c2fb356912c02919cf0588da79fe13a0) Thanks [@KuSh](https://github.com/KuSh)! - Upgrade to stable storybook 9
+
 ## 1.0.0
 
 ### Major Changes
