@@ -8,11 +8,16 @@ on:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
 
+permissions:
+  contents: write
+  id-token: write
+  pull-requests: write
+
 jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
@@ -21,14 +26,16 @@ jobs:
         with:
           node-version-file: package.json
 
+      # OIDC support is available from npm 11.5.1+
+      - name: Install latest npm
+        run: npm install -g npm@11.5.1
+
       - name: Install dependencies
         run: npm install --ignore-scripts
 
       - name: Create release Pull Request or publish to NPM
-        uses: changesets/action@v1
+        uses: changesets/action@e0145edc7d9d8679003495b11f87bd8ef63c0cba
         with:
           publish: npm run release
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
