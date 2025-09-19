@@ -26,6 +26,10 @@ jobs:
         with:
           node-version-file: package.json
 
+      # OIDC support is available from npm 11.5.1+
+      - name: Install latest npm
+        run: npm install -g npm@11.5.1
+
       - name: Install dependencies
         run: npm install --ignore-scripts
 
