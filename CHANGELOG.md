@@ -1,5 +1,11 @@
 # v0.5.0 (Wed May 28 2025)
 
+## 1.0.2
+
+### Patch Changes
+
+- [#26](https://github.com/k35o/storybook-addon-mock-date/pull/26) [`55d3fe1`](https://github.com/k35o/storybook-addon-mock-date/commit/55d3fe159bc92a731dfe31fad2bcae1ebbf04ec3) Thanks [@k35o](https://github.com/k35o)! - Migrate to npm OIDC authentication for secure publishing
+
 ## 1.0.1
 
 ### Patch Changes
