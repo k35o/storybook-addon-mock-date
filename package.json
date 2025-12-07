@@ -32,7 +32,7 @@
     "*.d.ts"
   ],
   "engines": {
-    "node": "24.4.1"
+    "node": ">=22.0.0"
   },
   "packageManager": "pnpm@10.24.0",
   "scripts": {
