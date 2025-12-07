@@ -3,7 +3,7 @@
   "version": "1.0.2",
   "description": "Storybook addon to mocking date",
   "keywords": [
-    "storybook-addons",
+    "storybook-addon",
     "mock-date"
   ],
   "repository": {
@@ -16,13 +16,11 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "default": "./dist/index.js"
     },
     "./preview": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/preview.js",
-      "require": "./dist/preview.cjs"
+      "types": "./dist/preview.d.ts",
+      "default": "./dist/preview.js"
     },
     "./manager": "./dist/manager.js",
     "./package.json": "./package.json"
@@ -38,6 +36,7 @@
   },
   "packageManager": "pnpm@10.24.0",
   "scripts": {
+    "prebuild": "node -e \"fs.rmSync('./dist', { recursive: true, force: true })\"",
     "build": "tsup",
     "build:watch": "pnpm run build -- --watch",
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -88,9 +87,6 @@
     ],
     "previewEntries": [
       "src/preview.ts"
-    ],
-    "nodeEntries": [
-      "src/preset.ts"
     ]
   },
   "storybook": {

@@ -1,10 +1,9 @@
-/**
- * to load the built addon in this test Storybook
- */
+import { fileURLToPath } from "node:url";
+
 export function previewAnnotations(entry = []) {
-  return [...entry, new URL("../dist/preview.js", import.meta.url).pathname];
+  return [...entry, fileURLToPath(import.meta.resolve("../dist/preview.js"))];
 }
 
 export function managerEntries(entry = []) {
-  return [...entry, new URL("../dist/manager.js", import.meta.url).pathname];
+  return [...entry, fileURLToPath(import.meta.resolve("../dist/manager.js"))];
 }
