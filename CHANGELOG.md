@@ -1,5 +1,23 @@
 # v0.5.0 (Wed May 28 2025)
 
+## 2.0.0
+
+### Major Changes
+
+- [#31](https://github.com/k35o/storybook-addon-mock-date/pull/31) [`d50dc60`](https://github.com/k35o/storybook-addon-mock-date/commit/d50dc60a6e5fad20c18abc2e8b68fa5dc525fab8) Thanks [@k35o](https://github.com/k35o)! - Migrate to Storybook 10 (next version)
+  - Update Storybook packages to next version
+  - Modernize build configuration with ESM-only output
+  - Remove unused addons (addon-links, addon-icons)
+  - Update peerDependencies to require Storybook ^10.0.0
+  - Simplify package exports and build configuration
+  - Migrate configuration files to TypeScript
+
+### Patch Changes
+
+- [#29](https://github.com/k35o/storybook-addon-mock-date/pull/29) [`4a35629`](https://github.com/k35o/storybook-addon-mock-date/commit/4a3562916ed8f04d7d7c126864ffc85d3017c543) Thanks [@k35o](https://github.com/k35o)! - Migrate package manager from npm to pnpm for improved dependency management
+
+- [#32](https://github.com/k35o/storybook-addon-mock-date/pull/32) [`1d6257c`](https://github.com/k35o/storybook-addon-mock-date/commit/1d6257cbbafd81cbe6b851ae341ce30c1a9c3a93) Thanks [@k35o](https://github.com/k35o)! - Relax Node.js version requirement from 24.4.1 to >=22.0.0 for better compatibility
+
 ## 1.0.2
 
 ### Patch Changes
