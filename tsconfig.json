@@ -1,19 +1,18 @@
 {
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
-    "baseUrl": ".",
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "incremental": false,
     "isolatedModules": true,
     "jsx": "react",
     "moduleResolution": "bundler",
-    "lib": ["es2020", "dom"],
-    "module": "Preserve",
+    "lib": ["esnext", "dom", "dom.iterable"],
+    "module": "preserve",
     "noImplicitAny": true,
-    "rootDir": "./src",
+    "rootDir": ".",
     "skipLibCheck": true,
-    "target": "ES2022"
+    "target": "esnext"
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*", "tsup.config.ts"]
 }

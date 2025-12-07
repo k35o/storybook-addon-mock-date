@@ -3,8 +3,7 @@ const config: StorybookConfig = {
   stories: ["../src/**/*.mdx", "../src/**/*.stories.@(js|jsx|ts|tsx)"],
   addons: [
     "@storybook/addon-docs",
-    "@storybook/addon-links",
-    "./local-preset.js",
+    import.meta.resolve("./local-preset.ts"),
   ],
   framework: {
     name: "@storybook/react-vite",

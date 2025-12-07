@@ -3,7 +3,7 @@
   "version": "1.0.2",
   "description": "Storybook addon to mocking date",
   "keywords": [
-    "storybook-addons",
+    "storybook-addon",
     "mock-date"
   ],
   "repository": {
@@ -16,13 +16,11 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "default": "./dist/index.js"
     },
     "./preview": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/preview.js",
-      "require": "./dist/preview.cjs"
+      "types": "./dist/preview.d.ts",
+      "default": "./dist/preview.js"
     },
     "./manager": "./dist/manager.js",
     "./package.json": "./package.json"
@@ -38,6 +36,7 @@
   },
   "packageManager": "pnpm@10.24.0",
   "scripts": {
+    "prebuild": "node -e \"fs.rmSync('./dist', { recursive: true, force: true })\"",
     "build": "tsup",
     "build:watch": "pnpm run build -- --watch",
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -51,10 +50,8 @@
     "@changesets/changelog-github": "0.5.2",
     "@changesets/cli": "2.29.8",
     "@sinonjs/fake-timers": "15.0.0",
-    "@storybook/addon-docs": "10.1.4",
-    "@storybook/addon-links": "10.1.4",
-    "@storybook/icons": "2.0.1",
-    "@storybook/react-vite": "10.1.4",
+    "@storybook/addon-docs": "next",
+    "@storybook/react-vite": "next",
     "@types/node": "24.10.1",
     "@types/react": "19.2.7",
     "@types/react-dom": "19.2.3",
@@ -67,7 +64,7 @@
     "prompts": "2.4.2",
     "react": "19.2.1",
     "react-dom": "19.2.1",
-    "storybook": "10.1.4",
+    "storybook": "next",
     "tsup": "8.5.1",
     "typescript": "5.9.3",
     "util": "0.12.5",
@@ -76,7 +73,7 @@
     "zx": "8.8.5"
   },
   "peerDependencies": {
-    "storybook": "^9.0.0"
+    "storybook": "^10.0.0"
   },
   "publishConfig": {
     "access": "public"
@@ -90,9 +87,6 @@
     ],
     "previewEntries": [
       "src/preview.ts"
-    ],
-    "nodeEntries": [
-      "src/preset.ts"
     ]
   },
   "storybook": {
