@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from "@storybook/react-vite";
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { CurrentDate } from "./CurrentDate";
+import { CurrentDate } from './current-date';
 
 const meta = {
   component: CurrentDate,
