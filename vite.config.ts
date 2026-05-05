@@ -76,6 +76,9 @@ export default defineConfig({
             storybookScript: 'pnpm storybook --ci',
           }),
         ],
+        optimizeDeps: {
+          include: ['@sinonjs/fake-timers'],
+        },
         test: {
           name: { label: 'storybook', color: 'magenta' },
           browser: {
