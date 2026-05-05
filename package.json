@@ -3,27 +3,14 @@
   "version": "2.0.0",
   "description": "Storybook addon to mocking date",
   "keywords": [
-    "storybook-addon",
-    "mock-date"
+    "mock-date",
+    "storybook-addon"
   ],
+  "license": "MIT",
+  "author": "k35o <kosakanoki@gmail.com>",
   "repository": {
     "type": "git",
     "url": "https://github.com/k35o/storybook-addon-mock-date.git"
-  },
-  "type": "module",
-  "license": "MIT",
-  "author": "k35o <kosakanoki@gmail.com>",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
-    },
-    "./preview": {
-      "types": "./dist/preview.d.ts",
-      "default": "./dist/preview.js"
-    },
-    "./manager": "./dist/manager.js",
-    "./package.json": "./package.json"
   },
   "files": [
     "dist/**/*",
@@ -31,73 +18,79 @@
     "*.js",
     "*.d.ts"
   ],
-  "engines": {
-    "node": ">=24.13.0"
+  "type": "module",
+  "exports": {
+    "./preview": {
+      "types": "./dist/preview.d.ts",
+      "default": "./dist/preview.js"
+    },
+    "./manager": "./dist/manager.js",
+    "./package.json": "./package.json"
   },
-  "packageManager": "pnpm@10.33.2",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
-    "prebuild": "node -e \"fs.rmSync('./dist', { recursive: true, force: true })\"",
-    "build": "tsup",
-    "build:watch": "pnpm run build -- --watch",
+    "build": "vp pack",
+    "build:watch": "vp pack --watch",
     "typecheck": "tsc --noEmit",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "check": "vp check",
+    "check:write": "vp check --fix",
+    "test": "vitest run",
     "start": "run-p build:watch 'storybook --quiet'",
     "prerelease": "zx scripts/prepublish-checks.js",
     "release": "pnpm run build && changeset publish",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
+  "dependencies": {
+    "@sinonjs/fake-timers": "15.0.0"
+  },
   "devDependencies": {
     "@changesets/changelog-github": "0.5.2",
     "@changesets/cli": "2.29.8",
-    "@sinonjs/fake-timers": "15.0.0",
+    "@k8o/oxc-config": "0.1.2",
     "@storybook/addon-docs": "next",
+    "@storybook/addon-vitest": "next",
     "@storybook/react-vite": "next",
     "@types/node": "24.10.1",
     "@types/react": "19.2.7",
     "@types/react-dom": "19.2.3",
     "@types/sinonjs__fake-timers": "15.0.1",
-    "@vitejs/plugin-react": "5.1.1",
+    "@vitejs/plugin-react": "6.0.1",
+    "@vitest/browser-playwright": "4.1.5",
     "boxen": "8.0.1",
     "dedent": "1.7.0",
     "npm-run-all": "4.1.5",
-    "prettier": "3.7.4",
+    "playwright": "1.59.1",
     "prompts": "2.4.2",
     "react": "19.2.1",
     "react-dom": "19.2.1",
     "storybook": "next",
-    "tsup": "8.5.1",
     "typescript": "5.9.3",
     "util": "0.12.5",
-    "vite": "7.2.6",
+    "vite": "8.0.10",
+    "vite-plus": "0.1.19",
+    "vitest": "4.1.5",
+    "vitest-browser-react": "2.2.0",
     "za": "0.3.3",
     "zx": "8.8.5"
   },
   "peerDependencies": {
     "storybook": "^10.0.0"
   },
-  "publishConfig": {
-    "access": "public"
+  "overrides": {
+    "storybook": "$storybook"
   },
-  "bundler": {
-    "exportEntries": [
-      "src/index.ts"
-    ],
-    "managerEntries": [
-      "src/manager.ts"
-    ],
-    "previewEntries": [
-      "src/preview.ts"
-    ]
+  "engines": {
+    "node": ">=24.13.0"
   },
+  "packageManager": "pnpm@10.33.2",
   "storybook": {
     "displayName": "Mocking Date",
     "supportedFrameworks": [
       "supported-frameworks"
     ],
     "icon": "https://user-images.githubusercontent.com/321738/63501763-88dbf600-c4cc-11e9-96cd-94adadc2fd72.png"
-  },
-  "overrides": {
-    "storybook": "$storybook"
   }
 }

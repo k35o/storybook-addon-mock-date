@@ -1,4 +1,3 @@
-
 # Storybook Addon Mocking Date
 
 ## Installation
@@ -60,7 +59,6 @@ export const AddParametersAtStory: Story = {
 
 export const AddParametersAtMeta: Story = {};
 ```
-
 
 ```js
 // .storybook/preview.ts

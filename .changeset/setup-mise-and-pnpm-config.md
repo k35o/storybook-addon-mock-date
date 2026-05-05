@@ -1,5 +1,5 @@
 ---
-"storybook-addon-mock-date": major
+'storybook-addon-mock-date': major
 ---
 
 Bump minimum Node.js requirement to `>=24.13.0` (was `>=22.0.0`) and update `packageManager` to `pnpm@10.33.2`.
