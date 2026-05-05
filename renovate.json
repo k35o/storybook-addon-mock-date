@@ -1,0 +1,35 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["github>k35o/renovate-config"],
+  "prConcurrentLimit": 10,
+  "packageRules": [
+    {
+      "matchPackageNames": ["/^@changesets/"],
+      "groupName": "changesets dependencies"
+    },
+    {
+      "matchPackageNames": ["/^@storybook/", "/^storybook$/"],
+      "groupName": "storybook dependencies"
+    },
+    {
+      "matchPackageNames": ["tsup"],
+      "groupName": "tsup dependencies"
+    },
+    {
+      "matchPackageNames": ["/^pnpm$/"],
+      "groupName": "pnpm dependencies"
+    },
+    {
+      "matchPackageNames": ["/^node$/"],
+      "groupName": "node dependencies"
+    },
+    {
+      "matchPackageNames": ["changesets/action"],
+      "enabled": false
+    },
+    {
+      "matchDepTypes": ["peerDependencies"],
+      "enabled": false
+    }
+  ]
+}
