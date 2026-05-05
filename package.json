@@ -14,9 +14,7 @@
   },
   "files": [
     "dist/**/*",
-    "README.md",
-    "*.js",
-    "*.d.ts"
+    "README.md"
   ],
   "type": "module",
   "exports": {
@@ -24,7 +22,6 @@
       "types": "./dist/preview.d.ts",
       "default": "./dist/preview.js"
     },
-    "./manager": "./dist/manager.js",
     "./package.json": "./package.json"
   },
   "publishConfig": {
