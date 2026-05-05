@@ -54,7 +54,12 @@ export default defineConfig({
     format: 'esm',
     dts: true,
     platform: 'browser',
-    external: ['react', 'react-dom', '@storybook/icons'],
+    external: [
+      'react',
+      'react-dom',
+      '@storybook/icons',
+      '@sinonjs/fake-timers',
+    ],
     clean: true,
   },
   plugins: [reactPlugin()],

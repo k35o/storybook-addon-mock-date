@@ -43,11 +43,13 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
+  "dependencies": {
+    "@sinonjs/fake-timers": "15.0.0"
+  },
   "devDependencies": {
     "@changesets/changelog-github": "0.5.2",
     "@changesets/cli": "2.29.8",
     "@k8o/oxc-config": "0.1.2",
-    "@sinonjs/fake-timers": "15.0.0",
     "@storybook/addon-docs": "next",
     "@storybook/react-vite": "next",
     "@types/node": "24.10.1",
