@@ -49,5 +49,13 @@ export default defineConfig({
   staged: {
     '*.{js,ts,cjs,mjs,jsx,tsx,json,jsonc}': 'vp check --fix',
   },
+  pack: {
+    entry: ['src/manager.ts', 'src/preview.ts'],
+    format: 'esm',
+    dts: true,
+    platform: 'browser',
+    external: ['react', 'react-dom', '@storybook/icons'],
+    clean: true,
+  },
   plugins: [reactPlugin()],
 });
