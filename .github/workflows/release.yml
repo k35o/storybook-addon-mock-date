@@ -24,28 +24,21 @@ jobs:
           client-id: ${{ secrets.K35O_BOT_CLIENT_ID }}
           private-key: ${{ secrets.K35O_BOT_PRIVATE_KEY }}
 
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+      - name: Checkout branch
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
           token: ${{ steps.generate-token.outputs.token }}
 
-      - name: Install dependencies
-        uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061
-
-      - name: Use Node.js
-        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f
-        with:
-          node-version-file: package.json
+      - name: Install
+        uses: ./.github/composite-actions/install
 
       # OIDC support is available from npm 11.5.1+
       - name: Install latest npm
-        run: npm install -g npm@11.5.1
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: npm install -g npm@latest
 
       - name: Create release Pull Request or publish to NPM
-        uses: changesets/action@e0145edc7d9d8679003495b11f87bd8ef63c0cba
+        uses: changesets/action@6a0a831ff30acef54f2c6aa1cbbc1096b066edaf # v1.7.0
         with:
           publish: pnpm run release
         env:
