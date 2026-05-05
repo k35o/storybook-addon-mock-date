@@ -14,5 +14,5 @@
     "skipLibCheck": true,
     "target": "esnext"
   },
-  "include": ["src/**/*", "tsup.config.ts"]
+  "include": ["src/**/*"]
 }

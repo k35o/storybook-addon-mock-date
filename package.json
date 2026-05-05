@@ -14,9 +14,7 @@
   },
   "files": [
     "dist/**/*",
-    "README.md",
-    "*.js",
-    "*.d.ts"
+    "README.md"
   ],
   "type": "module",
   "exports": {
@@ -24,7 +22,6 @@
       "types": "./dist/preview.d.ts",
       "default": "./dist/preview.js"
     },
-    "./manager": "./dist/manager.js",
     "./package.json": "./package.json"
   },
   "publishConfig": {
@@ -38,7 +35,6 @@
     "check:write": "vp check --fix",
     "test": "vitest run",
     "start": "run-p build:watch 'storybook --quiet'",
-    "prerelease": "zx scripts/prepublish-checks.js",
     "release": "pnpm run build && changeset publish",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
@@ -59,22 +55,15 @@
     "@types/sinonjs__fake-timers": "15.0.1",
     "@vitejs/plugin-react": "6.0.1",
     "@vitest/browser-playwright": "4.1.5",
-    "boxen": "8.0.1",
-    "dedent": "1.7.0",
-    "npm-run-all": "4.1.5",
+    "npm-run-all2": "8.0.4",
     "playwright": "1.59.1",
-    "prompts": "2.4.2",
     "react": "19.2.1",
     "react-dom": "19.2.1",
     "storybook": "next",
     "typescript": "5.9.3",
-    "util": "0.12.5",
     "vite": "8.0.10",
     "vite-plus": "0.1.19",
-    "vitest": "4.1.5",
-    "vitest-browser-react": "2.2.0",
-    "za": "0.3.3",
-    "zx": "8.8.5"
+    "vitest": "4.1.5"
   },
   "peerDependencies": {
     "storybook": "^10.0.0"

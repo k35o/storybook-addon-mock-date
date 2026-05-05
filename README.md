@@ -19,7 +19,6 @@ import type { StorybookConfig } from '@storybook/your-framework';
 const config: StorybookConfig = {
   // ...rest of config
   addons: [
-    '@storybook/addon-essentials'
     'storybook-addon-mock-date', // 👈 register the addon here
   ],
 };

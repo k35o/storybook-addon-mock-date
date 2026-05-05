@@ -13,9 +13,6 @@ export default defineConfig({
       'CHANGELOG.md',
       'dist/**',
       'storybook-static/**',
-      'manager.js',
-      'preview.js',
-      'scripts/**',
       '.changeset/**',
     ],
   },
@@ -25,9 +22,6 @@ export default defineConfig({
       'CHANGELOG.md',
       'dist/**',
       'storybook-static/**',
-      'manager.js',
-      'preview.js',
-      'scripts/**',
       '.changeset/**',
     ],
     options: {
@@ -54,7 +48,7 @@ export default defineConfig({
     '*.{js,ts,cjs,mjs,jsx,tsx,json,jsonc}': 'vp check --fix',
   },
   pack: {
-    entry: ['src/manager.ts', 'src/preview.ts'],
+    entry: ['src/preview.ts'],
     format: 'esm',
     dts: true,
     platform: 'browser',
