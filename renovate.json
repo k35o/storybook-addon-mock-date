@@ -20,6 +20,14 @@
       "groupName": "tsup dependencies"
     },
     {
+      "matchPackageNames": ["vite-plus"],
+      "groupName": "vite-plus dependencies"
+    },
+    {
+      "matchPackageNames": ["/^@k8o/"],
+      "groupName": "k8o dependencies"
+    },
+    {
       "matchPackageNames": ["/^pnpm$/"],
       "groupName": "pnpm dependencies"
     },
