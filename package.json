@@ -40,7 +40,7 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
-    "@sinonjs/fake-timers": "15.0.0"
+    "@sinonjs/fake-timers": "15.3.2"
   },
   "devDependencies": {
     "@changesets/changelog-github": "0.6.0",
@@ -49,16 +49,16 @@
     "@storybook/addon-docs": "next",
     "@storybook/addon-vitest": "next",
     "@storybook/react-vite": "next",
-    "@types/node": "24.10.1",
-    "@types/react": "19.2.7",
+    "@types/node": "24.12.2",
+    "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
     "@types/sinonjs__fake-timers": "15.0.1",
     "@vitejs/plugin-react": "6.0.1",
     "@vitest/browser-playwright": "4.1.5",
     "npm-run-all2": "8.0.4",
     "playwright": "1.59.1",
-    "react": "19.2.1",
-    "react-dom": "19.2.1",
+    "react": "19.2.5",
+    "react-dom": "19.2.5",
     "storybook": "next",
     "typescript": "6.0.3",
     "vite": "8.0.10",
