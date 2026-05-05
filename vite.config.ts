@@ -15,7 +15,6 @@ export default defineConfig({
       'storybook-static/**',
       'manager.js',
       'preview.js',
-      'scripts/**',
       '.changeset/**',
     ],
   },
@@ -27,7 +26,6 @@ export default defineConfig({
       'storybook-static/**',
       'manager.js',
       'preview.js',
-      'scripts/**',
       '.changeset/**',
     ],
     options: {
