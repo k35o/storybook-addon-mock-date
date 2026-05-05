@@ -1,7 +1,7 @@
-minimumReleaseAge: 4320
+minimumReleaseAge: 10080
 
 blockExoticSubdeps: true
 verifyDepsBeforeRun: install
 
-ignoredBuiltDependencies:
-  - esbuild
+allowBuilds:
+  esbuild: false
