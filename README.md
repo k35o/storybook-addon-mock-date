@@ -35,7 +35,7 @@ export default config;
 
 ## Usage
 
-Pass a `Date` (or a millisecond timestamp) via the `mockingDate` parameter at the story, meta, or preview level. Storybook merges parameters with the most specific value winning, so the precedence is **story > meta > preview**.
+Pass a `Date`, a millisecond timestamp, or an ISO 8601 string via the `mockingDate` parameter at the story, meta, or preview level. Storybook merges parameters with the most specific value winning, so the precedence is **story > meta > preview**.
 
 ```ts
 // Button.stories.ts
@@ -81,6 +81,12 @@ export default preview;
 ```
 
 A story whose merged `mockingDate` is `undefined` reverts the system clock to the moment the preview iframe loaded, so subsequent stories continue to see a deterministic value rather than continuing to drift forward.
+
+### Toolbar override
+
+The addon registers a clock icon in the Storybook toolbar. Picking a date there sets a global `mockingDate` value that overrides any `parameters.mockingDate` for every story until you press **Reset to real time**. Useful for spot-checking a component at different points in time without editing the story.
+
+The full precedence with the toolbar in play is **toolbar (globals) > story > meta > preview**.
 
 ### What gets mocked
 

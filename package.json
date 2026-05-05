@@ -22,6 +22,7 @@
       "types": "./dist/preview.d.ts",
       "default": "./dist/preview.js"
     },
+    "./manager": "./dist/manager.js",
     "./package.json": "./package.json"
   },
   "publishConfig": {
@@ -48,6 +49,7 @@
     "@k8o/oxc-config": "0.1.2",
     "@storybook/addon-docs": "next",
     "@storybook/addon-vitest": "next",
+    "@storybook/icons": "2.0.1",
     "@storybook/react-vite": "next",
     "@types/node": "24.10.1",
     "@types/react": "19.2.7",
