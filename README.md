@@ -84,9 +84,15 @@ A story whose merged `mockingDate` is `undefined` reverts the system clock to th
 
 ### Toolbar override
 
-The addon registers a clock icon in the Storybook toolbar. Picking a date there sets a global `mockingDate` value that overrides any `parameters.mockingDate` for every story until you press **Reset to real time**. Useful for spot-checking a component at different points in time without editing the story.
+The addon registers a clock icon in the Storybook toolbar. Clicking it opens a popover with a `datetime-local` input and a **Reset to real time** button.
 
-The full precedence with the toolbar in play is **toolbar (globals) > story > meta > preview**.
+![Toolbar icon and popover](https://raw.githubusercontent.com/k35o/storybook-addon-mock-date/main/.github/screenshots/02-toolbar-open.png)
+
+Picking a date stores it in `globals.mockingDate` and applies the mock immediately to every story you visit, regardless of what `parameters.mockingDate` is set to. Press **Reset to real time** (or clear the input) to drop the override and fall back to the parameter-based mocking.
+
+The full precedence with the toolbar in play is **toolbar (globals) > story > meta > preview**. So a story with its own `parameters.mockingDate` only shows that date until the toolbar override is engaged.
+
+This is intended for ad-hoc exploration — checking how a "happy birthday" banner looks on the actual day, walking through the same story across a year, etc. — without editing source files. Permanent mocking should still go through `parameters.mockingDate` so the value lives in version control.
 
 ### What gets mocked
 
