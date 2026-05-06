@@ -1,10 +1,15 @@
 {
   "name": "storybook-addon-mock-date",
   "version": "2.0.0",
-  "description": "Storybook addon to mocking date",
+  "description": "Storybook addon that mocks the JavaScript Date for individual stories.",
   "keywords": [
+    "storybook-addon",
+    "data-state",
     "mock-date",
-    "storybook-addon"
+    "mocking",
+    "date",
+    "time",
+    "fake-timers"
   ],
   "license": "MIT",
   "author": "k35o <kosakanoki@gmail.com>",
@@ -79,9 +84,6 @@
   "packageManager": "pnpm@10.33.2",
   "storybook": {
     "displayName": "Mocking Date",
-    "supportedFrameworks": [
-      "supported-frameworks"
-    ],
-    "icon": "https://user-images.githubusercontent.com/321738/63501763-88dbf600-c4cc-11e9-96cd-94adadc2fd72.png"
+    "icon": "https://raw.githubusercontent.com/k35o/storybook-addon-mock-date/main/.github/icon.png"
   }
 }
