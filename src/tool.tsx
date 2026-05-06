@@ -1,6 +1,6 @@
 import { TimeIcon } from '@storybook/icons';
 import React, { memo, useCallback } from 'react';
-import { IconButton, WithTooltip } from 'storybook/internal/components';
+import { Button, WithTooltip } from 'storybook/internal/components';
 import { useGlobals } from 'storybook/manager-api';
 
 import { GLOBAL_KEY } from './constants';
@@ -87,13 +87,15 @@ export const Tool = memo(function MockingDateTool() {
         <Picker value={current} onChange={handleChange} onClear={handleClear} />
       }
     >
-      <IconButton
+      <Button
         key={GLOBAL_KEY}
-        title="Override mocked date"
+        ariaLabel="Override mocked date"
+        variant="ghost"
+        padding="small"
         active={current !== undefined}
       >
         <TimeIcon />
-      </IconButton>
+      </Button>
     </WithTooltip>
   );
 });
