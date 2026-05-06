@@ -1,5 +1,26 @@
 # v0.5.0 (Wed May 28 2025)
 
+## 3.0.1
+
+### Patch Changes
+
+- [#47](https://github.com/k35o/storybook-addon-mock-date/pull/47) [`e84f2e1`](https://github.com/k35o/storybook-addon-mock-date/commit/e84f2e114a0954567fb5469dca8948a0b83eca04) Thanks [@k35o](https://github.com/k35o)! - Fix the addon catalog metadata so the package can be discovered and
+  categorised on storybook.js.org/addons.
+
+  - Reorder `keywords` so that `storybook-addon` is the first entry
+    (the catalog requires this) and add `data-state` as the category
+    keyword. Also include searchable terms (`mocking`, `date`, `time`,
+    `fake-timers`).
+  - Drop `storybook.supportedFrameworks: ["supported-frameworks"]`,
+    which was the literal placeholder string from the addon-kit
+    template and confused the catalog parser. The decorator is
+    renderer-agnostic, so omitting the field reflects reality.
+  - Replace the addon-kit placeholder GIF in `storybook.icon` with a
+    custom clock icon committed at `.github/icon.png`.
+  - Tighten the package `description` from "Storybook addon to mocking
+    date" to "Storybook addon that mocks the JavaScript Date for
+    individual stories.".
+
 ## 3.0.0
 
 ### Major Changes
