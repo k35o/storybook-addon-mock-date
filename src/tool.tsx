@@ -1,6 +1,6 @@
 import { TimeIcon } from '@storybook/icons';
 import React, { memo, useCallback } from 'react';
-import { Button, WithTooltip } from 'storybook/internal/components';
+import { ToggleButton, WithTooltip } from 'storybook/internal/components';
 import { useGlobals } from 'storybook/manager-api';
 
 import { GLOBAL_KEY } from './constants';
@@ -67,9 +67,15 @@ export const Tool = memo(function MockingDateTool() {
 
   const handleChange = useCallback(
     (next: string) => {
-      updateGlobals({
-        [GLOBAL_KEY]: next === '' ? undefined : new Date(next).toISOString(),
-      });
+      if (next === '') {
+        updateGlobals({ [GLOBAL_KEY]: undefined });
+        return;
+      }
+      const parsed = new Date(next);
+      if (Number.isNaN(parsed.getTime())) {
+        return;
+      }
+      updateGlobals({ [GLOBAL_KEY]: parsed.toISOString() });
     },
     [updateGlobals],
   );
@@ -87,15 +93,15 @@ export const Tool = memo(function MockingDateTool() {
         <Picker value={current} onChange={handleChange} onClear={handleClear} />
       }
     >
-      <Button
+      <ToggleButton
         key={GLOBAL_KEY}
         ariaLabel="Override mocked date"
         variant="ghost"
         padding="small"
-        active={current !== undefined}
+        pressed={current !== undefined}
       >
         <TimeIcon />
-      </Button>
+      </ToggleButton>
     </WithTooltip>
   );
 });
