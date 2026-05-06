@@ -48,7 +48,7 @@ export default defineConfig({
     '*.{js,ts,cjs,mjs,jsx,tsx,json,jsonc}': 'vp check --fix',
   },
   pack: {
-    entry: ['src/preview.ts'],
+    entry: ['src/manager.ts', 'src/preview.ts'],
     format: 'esm',
     dts: true,
     platform: 'browser',

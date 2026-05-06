@@ -35,7 +35,7 @@ export default config;
 
 ## Usage
 
-Pass a `Date` (or a millisecond timestamp) via the `mockingDate` parameter at the story, meta, or preview level. Storybook merges parameters with the most specific value winning, so the precedence is **story > meta > preview**.
+Pass a `Date`, a millisecond timestamp, or an ISO 8601 string via the `mockingDate` parameter at the story, meta, or preview level. Storybook merges parameters with the most specific value winning, so the precedence is **story > meta > preview**.
 
 ```ts
 // Button.stories.ts
@@ -81,6 +81,49 @@ export default preview;
 ```
 
 A story whose merged `mockingDate` is `undefined` reverts the system clock to the moment the preview iframe loaded, so subsequent stories continue to see a deterministic value rather than continuing to drift forward.
+
+### Toolbar override
+
+The addon registers a clock icon in the Storybook toolbar. Clicking it opens a popover with a `datetime-local` input and a **Reset to real time** button.
+
+![Toolbar icon and popover](https://raw.githubusercontent.com/k35o/storybook-addon-mock-date/main/.github/screenshots/02-toolbar-open.png)
+
+Picking a date stores it in `globals.mockingDate` and applies the mock immediately to every story you visit, regardless of what `parameters.mockingDate` is set to. Press **Reset to real time** (or clear the input) to drop the override and fall back to the parameter-based mocking.
+
+The full precedence with the toolbar in play is **toolbar (globals) > story > meta > preview**. So a story with its own `parameters.mockingDate` only shows that date until the toolbar override is engaged.
+
+This is intended for ad-hoc exploration — checking how a "happy birthday" banner looks on the actual day, walking through the same story across a year, etc. — without editing source files. Permanent mocking should still go through `parameters.mockingDate` so the value lives in version control.
+
+#### Disabling the toolbar (decorator-only mode)
+
+If you want the date mocking but don't want the clock icon in the toolbar, register the preview entry directly in `.storybook/preview.ts` instead of listing the addon in `.storybook/main.ts`:
+
+```ts
+// .storybook/preview.ts
+import type { Preview } from '@storybook/your-renderer';
+import mockDate from 'storybook-addon-mock-date/preview';
+
+const preview: Preview = {
+  ...mockDate,
+  parameters: {
+    mockingDate: new Date(2024, 0, 1),
+  },
+};
+
+export default preview;
+```
+
+```ts
+// .storybook/main.ts
+const config: StorybookConfig = {
+  // 'storybook-addon-mock-date' is intentionally not listed here
+  addons: [
+    /* ... */
+  ],
+};
+```
+
+The decorator runs the same way; only the toolbar manager bundle is skipped.
 
 ### What gets mocked
 
