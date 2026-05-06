@@ -16,3 +16,9 @@ Add a toolbar override and accept ISO 8601 strings for `mockingDate`.
 
 The `./manager` subpath export and the `dist/manager.js` bundle have
 been re-introduced to host the toolbar entry point.
+
+If you want the date mocking without the toolbar icon, you can opt into
+"decorator-only" mode by importing the preview entry directly from
+`.storybook/preview.ts` and leaving `'storybook-addon-mock-date'` out of
+your `.storybook/main.ts` `addons` list. The README's "Disabling the
+toolbar" section walks through the snippet.

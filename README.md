@@ -94,6 +94,37 @@ The full precedence with the toolbar in play is **toolbar (globals) > story > me
 
 This is intended for ad-hoc exploration — checking how a "happy birthday" banner looks on the actual day, walking through the same story across a year, etc. — without editing source files. Permanent mocking should still go through `parameters.mockingDate` so the value lives in version control.
 
+#### Disabling the toolbar (decorator-only mode)
+
+If you want the date mocking but don't want the clock icon in the toolbar, register the preview entry directly in `.storybook/preview.ts` instead of listing the addon in `.storybook/main.ts`:
+
+```ts
+// .storybook/preview.ts
+import type { Preview } from '@storybook/your-renderer';
+import mockDate from 'storybook-addon-mock-date/preview';
+
+const preview: Preview = {
+  ...mockDate,
+  parameters: {
+    mockingDate: new Date(2024, 0, 1),
+  },
+};
+
+export default preview;
+```
+
+```ts
+// .storybook/main.ts
+const config: StorybookConfig = {
+  // 'storybook-addon-mock-date' is intentionally not listed here
+  addons: [
+    /* ... */
+  ],
+};
+```
+
+The decorator runs the same way; only the toolbar manager bundle is skipped.
+
 ### What gets mocked
 
 Only the `Date` constructor and its static methods (`Date.now`, `Date.parse`, etc.) are replaced. `setTimeout`, `setInterval`, `requestAnimationFrame`, and the rest of the timer APIs continue to use the host clock unchanged.
