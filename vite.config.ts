@@ -9,6 +9,10 @@ import { defineConfig } from 'vite-plus';
 export default defineConfig({
   fmt: {
     ...fmt,
+    // The Storybook addon catalog requires `storybook-addon` to be the
+    // first keyword in package.json, but oxfmt's sortPackageJson sorts
+    // the keywords array alphabetically and breaks that contract.
+    sortPackageJson: false,
     ignorePatterns: [
       'CHANGELOG.md',
       'dist/**',
