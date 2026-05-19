@@ -1,5 +1,31 @@
 # v0.5.0 (Wed May 28 2025)
 
+## 3.0.2
+
+### Patch Changes
+
+- [#55](https://github.com/k35o/storybook-addon-mock-date/pull/55) [`347cdb7`](https://github.com/k35o/storybook-addon-mock-date/commit/347cdb7798ae36eb6d5410010caa238b64b5b2f0) Thanks [@k35o](https://github.com/k35o)! - Fix the mocked clock leaking into stories that have no `mockingDate`.
+
+  When switching from a story with `mockingDate` to a story where the
+  parameter is undefined (no story / meta / preview / global value), the
+  decorator used to call `clock.setSystemTime(now)` with a `now` captured
+  at module load. The fake `Date` stayed installed and froze at that
+  captured value, so subsequent `new Date()` calls returned a stale time
+  instead of the real one.
+
+  The decorator now calls `clock.uninstall()` and clears the cached
+  reference in that path, restoring the native `Date`.
+
+- [#57](https://github.com/k35o/storybook-addon-mock-date/pull/57) [`8cd84c0`](https://github.com/k35o/storybook-addon-mock-date/commit/8cd84c098e5a06a4c6fd7b4dbb86ca2799b4ce57) Thanks [@k35o](https://github.com/k35o)! - Lower the `engines.node` requirement back to `>=22.0.0` so consumers
+  running on the current Node.js maintenance LTS (22.x, supported until
+  April 2027) can install the addon without warnings.
+
+  This addon's published code is browser-only (Storybook preview and
+  manager bundles) and uses no Node.js APIs at runtime. Storybook 10
+  itself only requires Node 20+, so 22 is comfortably within range.
+  The repository's own development environment is still pinned to Node
+  24 via `mise.toml` and CI, which is independent of this constraint.
+
 ## 3.0.1
 
 ### Patch Changes
