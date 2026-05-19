@@ -3,7 +3,6 @@ import type { PartialStoryFn, StoryContext } from 'storybook/internal/types';
 
 import { GLOBAL_KEY, PARAM_KEY } from './constants';
 
-const now = new Date();
 let clock: FakeTimers.Clock | undefined;
 
 const toDate = (
@@ -38,7 +37,8 @@ export const withMockTime = (
 
   if (mockingDate === undefined) {
     if (clock) {
-      clock.setSystemTime(now);
+      clock.uninstall();
+      clock = undefined;
     }
     // eslint-disable-next-line typescript/no-unsafe-return -- Storybook's PartialStoryFn return type is loosely typed
     return StoryFn(context);
