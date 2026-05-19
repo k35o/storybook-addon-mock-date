@@ -128,3 +128,22 @@ The decorator runs the same way; only the toolbar manager bundle is skipped.
 ### What gets mocked
 
 Only the `Date` constructor and its static methods (`Date.now`, `Date.parse`, etc.) are replaced. `setTimeout`, `setInterval`, `requestAnimationFrame`, and the rest of the timer APIs continue to use the host clock unchanged.
+
+### Multiple stories in a docs page
+
+Stories rendered together on the same docs page (e.g. autodocs pages, MDX pages with several `<Canvas>` blocks) share one `globalThis.Date`, because the underlying `@sinonjs/fake-timers` installs the mock globally. Each story's `mockingDate` is applied correctly during its initial render — so static snapshots show the expected date for every story — but any code that reads `Date` _after_ that render sees whichever story's mock was installed last. Live-updating UI such as countdowns, "time ago" labels that refresh, or running clocks will therefore all converge on a single value across the page.
+
+If you need each story on a docs page to keep its own `mockingDate` for ongoing `new Date()` reads, render the stories in separate iframes by setting `parameters.docs.story.inline` to `false`:
+
+```ts
+// .storybook/preview.ts
+const preview: Preview = {
+  parameters: {
+    docs: {
+      story: { inline: false },
+    },
+  },
+};
+```
+
+Each iframe gets its own `globalThis.Date`, so the mocks no longer leak between stories. The tradeoff is the extra iframe startup cost per story on the page.
