@@ -81,7 +81,7 @@
   "engines": {
     "node": ">=22.0.0"
   },
-  "packageManager": "pnpm@11.1.1",
+  "packageManager": "pnpm@11.1.2",
   "storybook": {
     "displayName": "Mocking Date",
     "icon": "https://raw.githubusercontent.com/k35o/storybook-addon-mock-date/main/.github/icon.png"
