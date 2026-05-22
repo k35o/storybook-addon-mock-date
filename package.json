@@ -46,7 +46,7 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
-    "@sinonjs/fake-timers": "15.3.2"
+    "@sinonjs/fake-timers": "15.4.0"
   },
   "devDependencies": {
     "@changesets/changelog-github": "0.7.0",
@@ -56,21 +56,21 @@
     "@storybook/addon-vitest": "next",
     "@storybook/icons": "2.0.1",
     "@storybook/react-vite": "next",
-    "@types/node": "24.12.2",
+    "@types/node": "24.12.4",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
     "@types/sinonjs__fake-timers": "15.0.1",
-    "@vitejs/plugin-react": "6.0.1",
-    "@vitest/browser-playwright": "4.1.5",
+    "@vitejs/plugin-react": "6.0.2",
+    "@vitest/browser-playwright": "4.1.6",
     "npm-run-all2": "8.0.4",
-    "playwright": "1.59.1",
-    "react": "19.2.5",
-    "react-dom": "19.2.5",
+    "playwright": "1.60.0",
+    "react": "19.2.6",
+    "react-dom": "19.2.6",
     "storybook": "next",
     "typescript": "6.0.3",
-    "vite": "8.0.10",
+    "vite": "8.0.13",
     "vite-plus": "0.1.20",
-    "vitest": "4.1.5"
+    "vitest": "4.1.6"
   },
   "peerDependencies": {
     "storybook": "^10.0.0"
