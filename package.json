@@ -68,7 +68,7 @@
     "react-dom": "19.2.6",
     "storybook": "next",
     "typescript": "6.0.3",
-    "vite": "8.0.13",
+    "vite": "8.0.14",
     "vite-plus": "0.1.22",
     "vitest": "4.1.7"
   },
