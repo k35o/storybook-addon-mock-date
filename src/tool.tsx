@@ -48,6 +48,7 @@ const Picker = memo(function MockingDatePicker({
         Mocked date
         <input
           type="datetime-local"
+          aria-label="Mocked date"
           value={formatForInput(value)}
           onChange={(event) => {
             onChange(event.target.value);
