@@ -19,6 +19,8 @@
   },
   "files": [
     "dist/**/*",
+    "manager.js",
+    "preview.js",
     "README.md"
   ],
   "type": "module",

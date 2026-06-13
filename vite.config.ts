@@ -18,6 +18,8 @@ export default defineConfig({
       'dist/**',
       'storybook-static/**',
       '.changeset/**',
+      'manager.js',
+      'preview.js',
     ],
   },
   lint: {
@@ -27,6 +29,8 @@ export default defineConfig({
       'dist/**',
       'storybook-static/**',
       '.changeset/**',
+      'manager.js',
+      'preview.js',
     ],
     options: {
       reportUnusedDisableDirectives: 'error',
