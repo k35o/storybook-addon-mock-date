@@ -1,6 +1,6 @@
 {
   "name": "storybook-addon-mock-date",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "Storybook addon that mocks the JavaScript Date for individual stories.",
   "keywords": [
     "storybook-addon",
