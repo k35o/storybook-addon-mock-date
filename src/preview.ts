@@ -11,3 +11,15 @@ const preview: ProjectAnnotations<Renderer> = {
 };
 
 export default preview;
+
+export {
+  advanceMockedTime,
+  getMockedClock,
+  runAllMockedTimers,
+} from './with-mock-time';
+export type {
+  FakeableTimer,
+  MockingDateConfig,
+  MockingDateParam,
+  MockingDateValue,
+} from './types';
