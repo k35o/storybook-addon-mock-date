@@ -82,6 +82,48 @@ export default preview;
 
 A story whose merged `mockingDate` is `undefined` reverts the system clock to the moment the preview iframe loaded, so subsequent stories continue to see a deterministic value rather than continuing to drift forward.
 
+### Faking other timers
+
+By default only `Date` is mocked. To freeze other JavaScript time sources too, pass the **object form** of `mockingDate` with a `fake` array — its values map directly to [`@sinonjs/fake-timers`' `toFake`](https://github.com/sinonjs/fake-timers#var-clock--faketimersinstallconfig) (e.g. `'setTimeout'`, `'setInterval'`, `'requestAnimationFrame'`, `'performance'`):
+
+```ts
+export const Toast: Story = {
+  parameters: {
+    mockingDate: {
+      now: '2024-01-01T00:00:00',
+      // intercept the auto-dismiss timer so the toast never races the screenshot
+      fake: ['Date', 'setTimeout', 'clearTimeout'],
+    },
+  },
+};
+```
+
+The scalar form (`mockingDate: new Date(...)`, a timestamp, or an ISO string) is unchanged and still fakes only `Date`, so existing stories keep working as-is. When `fake` is omitted it defaults to `['Date']`.
+
+> **rAF needs `performance`.** Animation libraries (framer-motion, react-spring, GSAP, Lottie, three.js) compute their delta from `performance.now()`, so fake `requestAnimationFrame` **and** `performance` together — faking rAF alone leaves the solver with a zero/NaN delta.
+
+### Advancing time in `play`
+
+Faking a timer _freezes_ it. To reach a settled "after" state (a dismissed toast, a finished count-up, an elapsed countdown), advance the clock from a story's `play` function with `advanceMockedTime` — **after** the component has mounted and registered its timers:
+
+```ts
+import { advanceMockedTime } from 'storybook-addon-mock-date/preview';
+
+export const AfterDismiss: Story = {
+  parameters: { mockingDate: { fake: ['setTimeout'] } },
+  play: async ({ canvas }) => {
+    advanceMockedTime(4000); // run the auto-dismiss timeout
+    // assert the dismissed state…
+  },
+};
+```
+
+`runAllMockedTimers()` (drain every scheduled timer) and `getMockedClock()` (the raw `@sinonjs/fake-timers` clock) are also exported from `storybook-addon-mock-date/preview` for finer control.
+
+> Always import these helpers from `storybook-addon-mock-date/preview` — the same entry the decorator ships from. They share a single module-level clock, so importing from any other path gives you a disconnected instance and a "called without an installed clock" error.
+
+> Advancing has to happen in `play`, not in a decorator: a component registers its timers in an effect that runs _after_ mount, so a decorator-level tick would fire before any timer exists.
+
 ### Toolbar override
 
 The addon registers a clock icon in the Storybook toolbar. Clicking it opens a popover with a `datetime-local` input and a **Reset to real time** button.
@@ -127,7 +169,9 @@ The decorator runs the same way; only the toolbar manager bundle is skipped.
 
 ### What gets mocked
 
-Only the `Date` constructor and its static methods (`Date.now`, `Date.parse`, etc.) are replaced. `setTimeout`, `setInterval`, `requestAnimationFrame`, and the rest of the timer APIs continue to use the host clock unchanged.
+By default only the `Date` constructor and its static methods (`Date.now`, `Date.parse`, etc.) are replaced; `setTimeout`, `setInterval`, `requestAnimationFrame`, and the rest of the timer APIs keep using the host clock. Opt into faking any of them per story with the `fake` option (see [Faking other timers](#faking-other-timers)).
+
+Note that `@sinonjs/fake-timers` only controls JavaScript timers and the clock. CSS animations/transitions, the Web Animations API, `IntersectionObserver`/`ResizeObserver`, and network requests are unaffected — disable or mock those separately for stable visual snapshots.
 
 ### Multiple stories in a docs page
 
