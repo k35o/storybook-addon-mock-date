@@ -62,17 +62,17 @@
     "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
     "@types/sinonjs__fake-timers": "15.0.1",
-    "@vitejs/plugin-react": "6.0.2",
-    "@vitest/browser-playwright": "4.1.8",
-    "npm-run-all2": "9.0.1",
-    "playwright": "1.60.0",
+    "@vitejs/plugin-react": "6.0.3",
+    "@vitest/browser-playwright": "4.1.9",
+    "npm-run-all2": "9.0.2",
+    "playwright": "1.61.0",
     "react": "19.2.7",
     "react-dom": "19.2.7",
     "storybook": "next",
     "typescript": "6.0.3",
     "vite": "8.0.16",
     "vite-plus": "0.2.1",
-    "vitest": "4.1.8"
+    "vitest": "4.1.9"
   },
   "peerDependencies": {
     "storybook": "^10.0.0"
