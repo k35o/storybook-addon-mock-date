@@ -8,10 +8,6 @@
   "prConcurrentLimit": 10,
   "packageRules": [
     {
-      "matchPackageNames": ["/^@changesets/"],
-      "groupName": "changesets dependencies"
-    },
-    {
       "matchPackageNames": ["/^@storybook/", "/^storybook$/"],
       "groupName": "storybook dependencies"
     },
@@ -34,10 +30,6 @@
     {
       "matchPackageNames": ["/^node$/"],
       "groupName": "node dependencies"
-    },
-    {
-      "matchPackageNames": ["changesets/action"],
-      "enabled": false
     },
     {
       "matchDepTypes": ["peerDependencies"],

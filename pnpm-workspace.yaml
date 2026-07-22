@@ -1,8 +1,6 @@
 minimumReleaseAge: 10080
 minimumReleaseAgeExclude:
   - '@k8o/*'
-  # Renovate security update: pnpm@11.8.0
-  - pnpm@11.8.0
 
 blockExoticSubdeps: true
 verifyDepsBeforeRun: install
@@ -10,3 +8,13 @@ savePrefix: ''
 
 allowBuilds:
   esbuild: false
+
+# Moved from package.json "overrides" (storybook: $storybook): pnpm 11 does not
+# read overrides from package.json, and the "$" reference syntax is deprecated,
+# so the "next" tag is written out to match the storybook devDependency.
+overrides:
+  storybook: next
+
+versioning:
+  changelog:
+    storage: repository
