@@ -4,56 +4,41 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
 
+# Git and API writes go through the App token; GITHUB_TOKEN only needs the
+# id-token for npm OIDC trusted publishing.
 permissions:
-  contents: write
+  contents: read
   id-token: write
-  pull-requests: write
 
 jobs:
   release:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Generate token
-        id: generate-token
+        id: app-token
         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         with:
           client-id: ${{ secrets.K35O_BOT_CLIENT_ID }}
           private-key: ${{ secrets.K35O_BOT_PRIVATE_KEY }}
 
-      - name: Resolve GitHub App user id
-        id: app-user
-        env:
-          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
-          APP_SLUG: ${{ steps.generate-token.outputs.app-slug }}
-        run: |
-          user_id=$(gh api "users/${APP_SLUG}[bot]" --jq .id)
-          echo "id=${user_id}" >> "$GITHUB_OUTPUT"
-
       - name: Checkout branch
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           fetch-depth: 0
-          token: ${{ steps.generate-token.outputs.token }}
-
-      - name: Configure git user as GitHub App
-        env:
-          APP_SLUG: ${{ steps.generate-token.outputs.app-slug }}
-          APP_USER_ID: ${{ steps.app-user.outputs.id }}
-        run: |
-          git config user.name "${APP_SLUG}[bot]"
-          git config user.email "${APP_USER_ID}+${APP_SLUG}[bot]@users.noreply.github.com"
+          token: ${{ steps.app-token.outputs.token }}
 
       - name: Install
         uses: ./.github/composite-actions/install
 
-      - name: Create release Pull Request or publish to NPM
-        uses: changesets/action@6a0a831ff30acef54f2c6aa1cbbc1096b066edaf # v1.7.0
+      - name: Release
+        uses: k35o/pnpm-release-action@1430aa13b6d2709a6d18251cc90d1864ed9b61de # v0.2.0
         with:
-          publish: pnpm run release
-          setupGitUser: false
-        env:
-          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+          build: pnpm build
+          github-token: ${{ steps.app-token.outputs.token }}
+          auto-merge: true
