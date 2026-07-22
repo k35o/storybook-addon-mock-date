@@ -37,9 +37,8 @@ jobs:
         uses: ./.github/composite-actions/install
 
       - name: Release
-        uses: k35o/pnpm-release-action@9c884985ac053e708a8ef66738cd93d288efb096 # v0.1.0
+        uses: k35o/pnpm-release-action@1430aa13b6d2709a6d18251cc90d1864ed9b61de # v0.2.0
         with:
           build: pnpm build
           github-token: ${{ steps.app-token.outputs.token }}
-          setup-git-user: app
-          app-slug: ${{ steps.app-token.outputs.app-slug }}
+          auto-merge: true
