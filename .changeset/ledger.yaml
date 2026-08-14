@@ -2,3 +2,8 @@ storybook-addon-mock-date@3.1.1:
   dir: ""
   intents:
     - switch-release-automation
+storybook-addon-mock-date@3.2.0:
+  dir: ""
+  intents:
+    - csf-factories-support
+    - temporal-intl-opt-in
