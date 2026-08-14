@@ -1,9 +1,9 @@
-import type { Preview } from '@storybook/react-vite';
+import { definePreview } from '@storybook/react-vite';
+import mockDate from 'storybook-addon-mock-date';
 
-const preview: Preview = {
+export default definePreview({
+  addons: [mockDate()],
   parameters: {
     mockingDate: new Date(2024, 0, 1),
   },
-};
-
-export default preview;
+});
