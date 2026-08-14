@@ -175,9 +175,7 @@ export default preview;
 // .storybook/main.ts
 const config: StorybookConfig = {
   // 'storybook-addon-mock-date' is intentionally not listed here
-  addons: [
-    /* ... */
-  ],
+  addons: [/* ... */],
 };
 ```
 
