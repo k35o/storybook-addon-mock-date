@@ -22,4 +22,5 @@ export type {
   MockingDateConfig,
   MockingDateParam,
   MockingDateValue,
+  TemporalInstantLike,
 } from './types';

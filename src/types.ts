@@ -1,7 +1,15 @@
 import type { FakeMethod } from '@sinonjs/fake-timers';
 
+/**
+ * Structural stand-in for `Temporal.Instant` / `Temporal.ZonedDateTime` —
+ * anything carrying an `epochMilliseconds` number — so accepting Temporal
+ * values does not require Temporal lib types (TypeScript does not ship them
+ * yet).
+ */
+export type TemporalInstantLike = { epochMilliseconds: number };
+
 /** A point in time accepted by the `mockingDate` parameter. */
-export type MockingDateValue = Date | number | string;
+export type MockingDateValue = Date | number | string | TemporalInstantLike;
 
 /**
  * Timer / clock APIs that can be faked. Forwarded verbatim to
@@ -15,16 +23,18 @@ export type MockingDateConfig = {
   /** The instant to freeze the clock at. Defaults to the epoch (`0`). */
   now?: MockingDateValue;
   /**
-   * Which timer / clock APIs to fake. Defaults to `['Date']`, matching the
-   * historical behaviour. Expand it to also intercept `setTimeout`,
-   * `setInterval`, `requestAnimationFrame`, `performance`, etc.
+   * Which timer / clock APIs to fake. Defaults to `['Date']`. Add
+   * `'Temporal'` / `'Intl'` to freeze those clock readers too, or timer APIs
+   * (`setTimeout`, `setInterval`, `requestAnimationFrame`, `performance`,
+   * etc.) to intercept scheduling. An explicit array replaces the default
+   * entirely.
    */
   fake?: FakeableTimer[];
 };
 
 /**
- * The `mockingDate` parameter accepts either a bare date value (legacy form,
- * fakes only `Date`) or a configuration object.
+ * The `mockingDate` parameter accepts either a bare date value (shorthand for
+ * `{ now }` with the default `fake` set) or a configuration object.
  */
 export type MockingDateParam = MockingDateValue | MockingDateConfig;
 

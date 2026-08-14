@@ -35,6 +35,19 @@ export const StringMockingDate: Story = {
   },
 };
 
+// A `Temporal.Instant` / `Temporal.ZonedDateTime` (anything carrying
+// `epochMilliseconds`) also works as the bare parameter. Midday UTC keeps the
+// local calendar date identical across the timezones CI and dev machines run
+// in.
+export const TemporalInstantMockingDate: Story = {
+  parameters: {
+    mockingDate: { epochMilliseconds: Date.UTC(2025, 2, 3, 12) },
+  },
+  play: async ({ canvas }) => {
+    await expect(canvas.getByRole('time')).toHaveTextContent('2025年3月3日');
+  },
+};
+
 export const GlobalOverridesParameter: Story = {
   parameters: {
     mockingDate: new Date(2023, 6, 1),
