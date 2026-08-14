@@ -33,6 +33,22 @@ const config: StorybookConfig = {
 export default config;
 ```
 
+### With CSF factories (CSF Next)
+
+If your project uses [CSF factories](https://storybook.js.org/docs/api/csf/csf-next), register the addon in `.storybook/preview.ts` as well (keep the `main.ts` entry — it provides the toolbar):
+
+```ts
+// .storybook/preview.ts
+import { definePreview } from '@storybook/your-framework';
+import mockDate from 'storybook-addon-mock-date';
+
+export default definePreview({
+  addons: [mockDate()],
+});
+```
+
+This also types the `mockingDate` parameter and global in `preview.meta()` and `meta.story()`. The `advanceMockedTime` / `runAllMockedTimers` / `getMockedClock` helpers can then be imported from the package root — it shares the clock with the `/preview` entry.
+
 ## Usage
 
 Pass a `Date`, a millisecond timestamp, or an ISO 8601 string via the `mockingDate` parameter at the story, meta, or preview level. Storybook merges parameters with the most specific value winning, so the precedence is **story > meta > preview**.
