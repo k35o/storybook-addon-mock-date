@@ -62,7 +62,6 @@
     "@types/node": "24.13.3",
     "@types/react": "19.2.18",
     "@types/react-dom": "19.2.4",
-    "@types/sinonjs__fake-timers": "15.0.1",
     "@vitejs/plugin-react": "6.0.5",
     "@vitest/browser-playwright": "4.1.10",
     "npm-run-all2": "9.0.3",
