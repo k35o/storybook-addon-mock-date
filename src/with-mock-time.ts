@@ -128,9 +128,10 @@ const requireClock = (method: string): FakeTimers.Clock => {
  * and registered its timers — to capture a settled "after" state. Ticking from
  * a decorator would run before mount, when no component timer exists yet.
  *
- * Import it from `storybook-addon-mock-date/preview` — the same entry the
- * decorator ships from. Importing from any other path gives you a disconnected
- * clock instance and a "called without an installed clock" error.
+ * Import it from `storybook-addon-mock-date` or `storybook-addon-mock-date/preview`
+ * — both entries share the module-level clock the decorator uses. Importing
+ * from any other path gives you a disconnected clock instance and a "called
+ * without an installed clock" error.
  */
 export const advanceMockedTime = (ms: number): void => {
   requireClock('advanceMockedTime').tick(ms);

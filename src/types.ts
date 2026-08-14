@@ -27,3 +27,22 @@ export type MockingDateConfig = {
  * fakes only `Date`) or a configuration object.
  */
 export type MockingDateParam = MockingDateValue | MockingDateConfig;
+
+/**
+ * Addon type declarations for CSF factories: registering the addon via
+ * `definePreview({ addons: [mockDate()] })` types the `mockingDate`
+ * parameter and global in `preview.meta()` / `meta.story()`.
+ */
+export type MockingDateTypes = {
+  parameters: {
+    /** Freeze the clock for the story. See {@link MockingDateParam}. */
+    mockingDate?: MockingDateParam;
+  };
+  globals: {
+    /**
+     * Toolbar override: a date value that takes precedence over the
+     * `mockingDate` parameter's `now` while leaving its `fake` set intact.
+     */
+    mockingDate?: MockingDateValue;
+  };
+};
