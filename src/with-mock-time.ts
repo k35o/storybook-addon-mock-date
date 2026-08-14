@@ -7,12 +7,19 @@ import type {
   MockingDateConfig,
   MockingDateParam,
   MockingDateValue,
+  TemporalInstantLike,
 } from './types';
 
 let clock: FakeTimers.Clock | undefined;
 let installedFake: string | undefined;
 
 const DEFAULT_FAKE: FakeableTimer[] = ['Date'];
+
+const isInstantLike = (value: unknown): value is TemporalInstantLike =>
+  typeof value === 'object' &&
+  value !== null &&
+  'epochMilliseconds' in value &&
+  typeof value.epochMilliseconds === 'number';
 
 // Accepts `unknown` because Storybook parameters/globals are untyped at
 // runtime — this gracefully ignores `null` and any non-date junk instead of
@@ -28,11 +35,20 @@ const toDate = (value: unknown): Date | number | undefined => {
   if (typeof value === 'number' || value instanceof Date) {
     return value;
   }
+  if (isInstantLike(value)) {
+    return value.epochMilliseconds;
+  }
   return undefined;
 };
 
+// `now`/`fake` keys win over instant-likeness so that a (nonsensical) object
+// carrying both `epochMilliseconds` and config keys keeps its `fake` set
+// instead of silently dropping it. Real Temporal objects carry neither key.
 const isConfig = (value: unknown): value is MockingDateConfig =>
-  typeof value === 'object' && value !== null && !(value instanceof Date);
+  typeof value === 'object' &&
+  value !== null &&
+  !(value instanceof Date) &&
+  ('now' in value || 'fake' in value || !isInstantLike(value));
 
 type NormalizedMockingDate = {
   now: Date | number | undefined;
@@ -58,10 +74,12 @@ export const normalizeMockingDate = (
   return { now, fake };
 };
 
-const isDefaultFake = (fake: FakeableTimer[]): boolean =>
-  fake.length === 1 && fake[0] === 'Date';
-
 const fakeKeyOf = (fake: FakeableTimer[]): string => fake.toSorted().join(',');
+
+const DEFAULT_FAKE_KEY = fakeKeyOf(DEFAULT_FAKE);
+
+const isDefaultFake = (fake: FakeableTimer[]): boolean =>
+  fakeKeyOf(fake) === DEFAULT_FAKE_KEY;
 
 export const withMockTime = (
   StoryFn: PartialStoryFn,
@@ -72,8 +90,8 @@ export const withMockTime = (
     context.globals[GLOBAL_KEY] as MockingDateValue | undefined,
   );
 
-  // Preserve the original behaviour: with no date and only the default
-  // `['Date']` fake set there is nothing to mock.
+  // With no date and only the default `['Date']` fake set there is nothing
+  // to mock.
   const shouldMock = now !== undefined || !isDefaultFake(fake);
 
   if (!shouldMock) {
@@ -101,7 +119,14 @@ export const withMockTime = (
     // previous story's time.
     clock.setSystemTime(now ?? 0);
   } else {
-    clock = FakeTimers.install({ toFake: fake, now: now ?? 0 });
+    // `ignoreMissingTimers` keeps stories alive in environments that lack one
+    // of the requested APIs (e.g. no native `Temporal` in Safari yet) —
+    // fake-timers throws on absent globals otherwise.
+    clock = FakeTimers.install({
+      toFake: fake,
+      now: now ?? 0,
+      ignoreMissingTimers: true,
+    });
     installedFake = nextKey;
   }
 

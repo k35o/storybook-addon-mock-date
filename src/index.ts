@@ -14,6 +14,7 @@ export type {
   MockingDateParam,
   MockingDateTypes,
   MockingDateValue,
+  TemporalInstantLike,
 } from './types';
 
 const mockDate = () => definePreviewAddon<MockingDateTypes>(preview);
