@@ -1,7 +1,7 @@
 {
   "name": "storybook-addon-mock-date",
   "version": "3.1.1",
-  "description": "Storybook addon that mocks the JavaScript Date for individual stories.",
+  "description": "Storybook addon that mocks the JavaScript Date — and opt-in Temporal and Intl.DateTimeFormat — for individual stories.",
   "keywords": [
     "storybook-addon",
     "data-state",
@@ -9,6 +9,7 @@
     "mocking",
     "date",
     "time",
+    "temporal",
     "fake-timers"
   ],
   "license": "MIT",

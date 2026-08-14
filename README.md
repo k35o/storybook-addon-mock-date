@@ -1,6 +1,6 @@
 # Storybook Addon Mocking Date
 
-A [Storybook](https://storybook.js.org/) addon that mocks the JavaScript `Date` for individual stories using [`@sinonjs/fake-timers`](https://github.com/sinonjs/fake-timers). Useful for components that read the current date or time and need deterministic snapshots, visual regression tests, or coverage of time-sensitive UI such as relative timestamps and seasonal greetings.
+A [Storybook](https://storybook.js.org/) addon that mocks the JavaScript `Date` — and, opt-in, `Temporal` and `Intl.DateTimeFormat` — for individual stories using [`@sinonjs/fake-timers`](https://github.com/sinonjs/fake-timers). Useful for components that read the current date or time and need deterministic snapshots, visual regression tests, or coverage of time-sensitive UI such as relative timestamps and seasonal greetings.
 
 ## Requirements
 
@@ -51,7 +51,7 @@ This also types the `mockingDate` parameter and global in `preview.meta()` and `
 
 ## Usage
 
-Pass a `Date`, a millisecond timestamp, or an ISO 8601 string via the `mockingDate` parameter at the story, meta, or preview level. Storybook merges parameters with the most specific value winning, so the precedence is **story > meta > preview**.
+Pass a `Date`, a millisecond timestamp, an ISO 8601 string, or a `Temporal.Instant` / `Temporal.ZonedDateTime` via the `mockingDate` parameter at the story, meta, or preview level. Storybook merges parameters with the most specific value winning, so the precedence is **story > meta > preview**.
 
 ```ts
 // Button.stories.ts
@@ -100,7 +100,7 @@ A story whose merged `mockingDate` is `undefined` reverts the system clock to th
 
 ### Faking other timers
 
-By default only `Date` is mocked. To freeze other JavaScript time sources too, pass the **object form** of `mockingDate` with a `fake` array — its values map directly to [`@sinonjs/fake-timers`' `toFake`](https://github.com/sinonjs/fake-timers#var-clock--faketimersinstallconfig) (e.g. `'setTimeout'`, `'setInterval'`, `'requestAnimationFrame'`, `'performance'`):
+By default only `Date` is mocked. To freeze other time sources too — `Temporal`, `Intl`, or scheduling APIs like `setTimeout` / `setInterval` / `requestAnimationFrame` / `performance` — pass the **object form** of `mockingDate` with a `fake` array — its values map directly to [`@sinonjs/fake-timers`' `toFake`](https://github.com/sinonjs/fake-timers#var-clock--faketimersinstallconfig):
 
 ```ts
 export const Toast: Story = {
@@ -114,7 +114,21 @@ export const Toast: Story = {
 };
 ```
 
-The scalar form (`mockingDate: new Date(...)`, a timestamp, or an ISO string) is unchanged and still fakes only `Date`, so existing stories keep working as-is. When `fake` is omitted it defaults to `['Date']`.
+An explicit `fake` array **replaces** the default entirely — `fake: ['setTimeout']` fakes only `setTimeout` and leaves `Date` real. When `fake` is omitted (including the scalar form) it defaults to `['Date']`, so existing stories keep working as-is.
+
+Components that read the clock through `Temporal.Now` or a zero-argument `Intl.DateTimeFormat#format` need those APIs faked too — faking `Date` alone leaves them on the real clock:
+
+```ts
+export const ChristmasBanner: Story = {
+  parameters: {
+    mockingDate: {
+      now: '2024-12-25T12:00:00Z',
+      // freeze Temporal.Now and zero-arg Intl.DateTimeFormat#format as well
+      fake: ['Date', 'Temporal', 'Intl'],
+    },
+  },
+};
+```
 
 > **rAF needs `performance`.** Animation libraries (framer-motion, react-spring, GSAP, Lottie, three.js) compute their delta from `performance.now()`, so fake `requestAnimationFrame` **and** `performance` together — faking rAF alone leaves the solver with a zero/NaN delta.
 
@@ -183,13 +197,22 @@ The decorator runs the same way; only the toolbar manager bundle is skipped.
 
 ### What gets mocked
 
-By default only the `Date` constructor and its static methods (`Date.now`, `Date.parse`, etc.) are replaced; `setTimeout`, `setInterval`, `requestAnimationFrame`, and the rest of the timer APIs keep using the host clock. Opt into faking any of them per story with the `fake` option (see [Faking other timers](#faking-other-timers)).
+By default only the `Date` constructor and its static methods (`Date.now`, `Date.parse`, etc.) are replaced; everything else keeps using the host clock. Opt into more per story with the `fake` option (see [Faking other timers](#faking-other-timers)):
 
-Note that `@sinonjs/fake-timers` only controls JavaScript timers and the clock. CSS animations/transitions, the Web Animations API, `IntersectionObserver`/`ResizeObserver`, and network requests are unaffected — disable or mock those separately for stable visual snapshots.
+- **`'Temporal'`** — replaces the `Temporal.Now` namespace (`instant()`, `zonedDateTimeISO()`, `plainDateISO()`, …), in browsers that ship [native `Temporal`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Temporal#browser_compatibility) (Chrome/Edge 144+, Firefox 139+, Node.js 26+). Where `Temporal` doesn't exist yet the entry is skipped harmlessly. Imported polyfills (`temporal-polyfill`, `@js-temporal/polyfill`) bypass the global and are not replaced, but they derive the current time from `Date.now()` internally, so the `Date` fake pins them at millisecond precision.
+- **`'Intl'`** — routes zero-argument `Intl.DateTimeFormat` `format()` / `formatToParts()` calls, which read the system clock directly rather than going through `Date.now`, through the mocked clock. Calls with an explicit date argument behave as usual (except a falsy `0`, which upstream `@sinonjs/fake-timers` treats as absent and formats as the mocked instant).
+- **Scheduling APIs** (`'setTimeout'`, `'setInterval'`, `'requestAnimationFrame'`, `'performance'`, and the rest) — freezes timers so timer-driven UI can be advanced deterministically from `play`.
+
+### What stays real
+
+- **The timezone.** The addon freezes the _instant_, not the environment: `Date.prototype.getTimezoneOffset()`, `Intl.DateTimeFormat().resolvedOptions().timeZone`, and `Temporal.Now.timeZoneId()` all keep reporting the host's timezone. To render a story as if in another timezone, launch the browser with one — e.g. Playwright's `timezoneId` option or the `TZ` environment variable.
+- **Values captured before the decorator runs.** A module-scope `const now = new Date()` is evaluated at import time, before any story's mock is installed.
+- **Other realms.** Web Workers, Service Workers, and other iframes have their own globals; the mock is installed only in the preview iframe.
+- **Everything outside the JS clock.** CSS animations/transitions, the Web Animations API, `IntersectionObserver`/`ResizeObserver`, `AbortSignal.timeout()`, and network requests are unaffected — disable or mock those separately for stable visual snapshots.
 
 ### Multiple stories in a docs page
 
-Stories rendered together on the same docs page (e.g. autodocs pages, MDX pages with several `<Canvas>` blocks) share one `globalThis.Date`, because the underlying `@sinonjs/fake-timers` installs the mock globally. Each story's `mockingDate` is applied correctly during its initial render — so static snapshots show the expected date for every story — but any code that reads `Date` _after_ that render sees whichever story's mock was installed last. Live-updating UI such as countdowns, "time ago" labels that refresh, or running clocks will therefore all converge on a single value across the page.
+Stories rendered together on the same docs page (e.g. autodocs pages, MDX pages with several `<Canvas>` blocks) share one set of mocked globals (`Date`, `Temporal`, `Intl`), because the underlying `@sinonjs/fake-timers` installs the mock globally. Each story's `mockingDate` is applied correctly during its initial render — so static snapshots show the expected date for every story — but any code that reads the clock _after_ that render sees whichever story's mock was installed last. Live-updating UI such as countdowns, "time ago" labels that refresh, or running clocks will therefore all converge on a single value across the page.
 
 If you need each story on a docs page to keep its own `mockingDate` for ongoing `new Date()` reads, render the stories in separate iframes by setting `parameters.docs.story.inline` to `false`:
 
@@ -204,4 +227,4 @@ const preview: Preview = {
 };
 ```
 
-Each iframe gets its own `globalThis.Date`, so the mocks no longer leak between stories. The tradeoff is the extra iframe startup cost per story on the page.
+Each iframe gets its own globals, so the mocks no longer leak between stories. The tradeoff is the extra iframe startup cost per story on the page.
