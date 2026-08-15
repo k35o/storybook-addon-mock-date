@@ -7,3 +7,7 @@ storybook-addon-mock-date@3.2.0:
   intents:
     - csf-factories-support
     - temporal-intl-opt-in
+storybook-addon-mock-date@3.2.1:
+  dir: ""
+  intents:
+    - factory-runtime-csf-import
