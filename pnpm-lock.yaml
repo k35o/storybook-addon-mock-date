@@ -19,8 +19,8 @@ importers:
         version: 10.6.0-alpha.5(@types/react@19.2.18)(react@19.2.8)(vite-plus@0.2.9(@types/node@24.13.3)(@vitest/browser-playwright@4.1.10)(esbuild@0.28.2)(typescript@7.0.2)(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2)))
     devDependencies:
       '@k8o/oxc-config':
-        specifier: 0.2.1
-        version: 0.2.1(oxfmt@0.62.0(vite-plus@0.2.9(@types/node@24.13.3)(@vitest/browser-playwright@4.1.10)(esbuild@0.28.2)(typescript@7.0.2)(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2))))(oxlint-tsgolint@7.0.2001)(oxlint@1.77.0(oxlint-tsgolint@7.0.2001)(vite-plus@0.2.9(@types/node@24.13.3)(@vitest/browser-playwright@4.1.10)(esbuild@0.28.2)(typescript@7.0.2)(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2))))
+        specifier: 0.3.0
+        version: 0.3.0(oxfmt@0.62.0(vite-plus@0.2.9(@types/node@24.13.3)(@vitest/browser-playwright@4.1.10)(esbuild@0.28.2)(typescript@7.0.2)(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2))))(oxlint-tsgolint@7.0.2001)(oxlint@1.77.0(oxlint-tsgolint@7.0.2001)(vite-plus@0.2.9(@types/node@24.13.3)(@vitest/browser-playwright@4.1.10)(esbuild@0.28.2)(typescript@7.0.2)(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2))))
       '@storybook/addon-docs':
         specifier: next
         version: 10.6.0-alpha.5(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(esbuild@0.28.2)(storybook@10.6.0-alpha.5(@types/react@19.2.18)(react@19.2.8)(vite-plus@0.2.9(@types/node@24.13.3)(@vitest/browser-playwright@4.1.10)(esbuild@0.28.2)(typescript@7.0.2)(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2))))(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2))
@@ -351,10 +351,11 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
-  '@k8o/oxc-config@0.2.1':
-    resolution: {integrity: sha512-2r9T1LnEhL2P3nfEJVeuam9aTc4UeiyTUCyo5xqgfP5DpydXwp7Q5m58K9k8yilJorWbxrOg3f+W2wI+8wXg6w==}
-    engines: {node: ^20.19.0 || >=22.12.0}
+  '@k8o/oxc-config@0.3.0':
+    resolution: {integrity: sha512-KhzgHQPvzN9BURfhn4JoetiMNKxogr9sAPgOVD+hnshoSbXD33+PzWAPPg84LyU/tybXsxit7Bkdy1YuJAfMPg==}
+    engines: {node: '>=24.13.0'}
     peerDependencies:
+      '@k8o/html-nest': '>=0.2.0'
       eslint-plugin-playwright: '>=2.0.0'
       eslint-plugin-regexp: '>=3.0.0'
       eslint-plugin-storybook: '>=10.0.0'
@@ -363,6 +364,8 @@ packages:
       oxlint-tailwindcss: '>=1.3.2'
       oxlint-tsgolint: '>=0.23.0'
     peerDependenciesMeta:
+      '@k8o/html-nest':
+        optional: true
       eslint-plugin-playwright:
         optional: true
       eslint-plugin-regexp:
@@ -2681,7 +2684,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@k8o/oxc-config@0.2.1(oxfmt@0.62.0(vite-plus@0.2.9(@types/node@24.13.3)(@vitest/browser-playwright@4.1.10)(esbuild@0.28.2)(typescript@7.0.2)(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2))))(oxlint-tsgolint@7.0.2001)(oxlint@1.77.0(oxlint-tsgolint@7.0.2001)(vite-plus@0.2.9(@types/node@24.13.3)(@vitest/browser-playwright@4.1.10)(esbuild@0.28.2)(typescript@7.0.2)(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2))))':
+  '@k8o/oxc-config@0.3.0(oxfmt@0.62.0(vite-plus@0.2.9(@types/node@24.13.3)(@vitest/browser-playwright@4.1.10)(esbuild@0.28.2)(typescript@7.0.2)(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2))))(oxlint-tsgolint@7.0.2001)(oxlint@1.77.0(oxlint-tsgolint@7.0.2001)(vite-plus@0.2.9(@types/node@24.13.3)(@vitest/browser-playwright@4.1.10)(esbuild@0.28.2)(typescript@7.0.2)(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2))))':
     optionalDependencies:
       oxfmt: 0.62.0(vite-plus@0.2.9(@types/node@24.13.3)(@vitest/browser-playwright@4.1.10)(esbuild@0.28.2)(typescript@7.0.2)(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2)))
       oxlint: 1.77.0(oxlint-tsgolint@7.0.2001)(vite-plus@0.2.9(@types/node@24.13.3)(@vitest/browser-playwright@4.1.10)(esbuild@0.28.2)(typescript@7.0.2)(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2)))
