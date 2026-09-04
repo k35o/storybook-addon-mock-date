@@ -62,18 +62,18 @@
     "@storybook/react-vite": "next",
     "@types/node": "24.13.3",
     "@types/react": "19.2.18",
-    "@types/react-dom": "19.2.4",
-    "@vitejs/plugin-react": "6.0.5",
-    "@vitest/browser-playwright": "4.1.10",
+    "@types/react-dom": "19.2.5",
+    "@vitejs/plugin-react": "6.1.1",
+    "@vitest/browser-playwright": "4.1.11",
     "npm-run-all2": "9.0.3",
     "playwright": "1.62.1",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "storybook": "next",
     "typescript": "7.0.2",
-    "vite": "8.2.1",
+    "vite": "8.2.2",
     "vite-plus": "0.2.9",
-    "vitest": "4.1.10"
+    "vitest": "4.1.11"
   },
   "peerDependencies": {
     "storybook": "^10.0.0"
