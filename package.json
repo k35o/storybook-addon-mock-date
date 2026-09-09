@@ -55,7 +55,7 @@
     "@sinonjs/fake-timers": "15.4.0"
   },
   "devDependencies": {
-    "@k8o/oxc-config": "0.2.1",
+    "@k8o/oxc-config": "0.3.0",
     "@storybook/addon-docs": "next",
     "@storybook/addon-vitest": "next",
     "@storybook/icons": "2.1.0",
