@@ -16,39 +16,38 @@ First, install the package.
 npm install --save-dev storybook-addon-mock-date
 ```
 
-Then, register it as an addon in `.storybook/main.ts`.
+Then, register it in two places: `.storybook/preview.ts` applies the decorator, and `.storybook/main.ts` adds the toolbar.
+
+```ts
+// .storybook/preview.ts
+
+// Replace your-framework with the framework you are using (e.g., react-vite, vue3-vite)
+import { definePreview } from '@storybook/your-framework';
+import mockDate from 'storybook-addon-mock-date';
+
+export default definePreview({
+  // ...rest of preview
+  addons: [mockDate()], // 👈 applies the decorator
+});
+```
 
 ```ts
 // .storybook/main.ts
 
 // Replace your-framework with the framework you are using (e.g., react-vite, vue3-vite)
-import type { StorybookConfig } from '@storybook/your-framework';
+import { defineMain } from '@storybook/your-framework/node';
 
-const config: StorybookConfig = {
+export default defineMain({
   // ...rest of config
   addons: [
-    'storybook-addon-mock-date', // 👈 register the addon here
+    'storybook-addon-mock-date', // 👈 adds the toolbar
   ],
-};
-
-export default config;
-```
-
-### With CSF factories (CSF Next)
-
-If your project uses [CSF factories](https://storybook.js.org/docs/api/csf/csf-next), register the addon in `.storybook/preview.ts` as well (keep the `main.ts` entry — it provides the toolbar):
-
-```ts
-// .storybook/preview.ts
-import { definePreview } from '@storybook/your-framework';
-import mockDate from 'storybook-addon-mock-date';
-
-export default definePreview({
-  addons: [mockDate()],
 });
 ```
 
-This also types the `mockingDate` parameter and global in `preview.meta()` and `meta.story()`. The `advanceMockedTime` / `runAllMockedTimers` / `getMockedClock` helpers can then be imported from the package root — it shares the clock with the `/preview` entry.
+Don't skip the `preview.ts` entry. Once `preview.ts` calls `definePreview` ([CSF Next](https://storybook.js.org/docs/api/csf/csf-next), Storybook 11's default), Storybook ignores the preview annotations that addons register through `main.ts`, so without it the decorator never runs and every story silently sees the real clock. Registering through `definePreview` also types the `mockingDate` parameter and global in `preview.meta()` and `meta.story()`.
+
+If your `preview.ts` still exports a plain object instead of calling `definePreview`, the `main.ts` entry alone is enough: Storybook applies the addon's preview annotations for you.
 
 ## Usage
 
@@ -56,45 +55,34 @@ Pass a `Date`, a millisecond timestamp, an ISO 8601 string, or a `Temporal.Insta
 
 ```ts
 // Button.stories.ts
-
-// Replace your-framework with the name of your framework
-import type { Meta, StoryObj } from '@storybook/your-framework';
+import preview from '#.storybook/preview';
 
 import { Button } from './Button';
 
-const meta: Meta<typeof Button> = {
+const meta = preview.meta({
   component: Button,
   parameters: {
     mockingDate: new Date(2024, 3, 1),
   },
-};
+});
 
-export default meta;
-
-type Story = StoryObj<typeof meta>;
-
-export const AddParametersAtStory: Story = {
+export const AddParametersAtStory = meta.story({
   parameters: {
     mockingDate: new Date(2023, 6, 1),
   },
-};
+});
 
-export const AddParametersAtMeta: Story = {};
+export const AddParametersAtMeta = meta.story();
 ```
 
 ```ts
 // .storybook/preview.ts
-
-// Replace your-renderer with the name of your renderer
-import type { Preview } from '@storybook/your-renderer';
-
-const preview: Preview = {
+export default definePreview({
+  addons: [mockDate()],
   parameters: {
     mockingDate: new Date(2024, 0, 1),
   },
-};
-
-export default preview;
+});
 ```
 
 A story whose merged `mockingDate` is `undefined` reverts the system clock to the moment the preview iframe loaded, so subsequent stories continue to see a deterministic value rather than continuing to drift forward.
@@ -104,7 +92,7 @@ A story whose merged `mockingDate` is `undefined` reverts the system clock to th
 By default only `Date` is mocked. To freeze other time sources too — `Temporal`, `Intl`, or scheduling APIs like `setTimeout` / `setInterval` / `requestAnimationFrame` / `performance` — pass the **object form** of `mockingDate` with a `fake` array — its values map directly to [`@sinonjs/fake-timers`' `toFake`](https://github.com/sinonjs/fake-timers#var-clock--faketimersinstallconfig):
 
 ```ts
-export const Toast: Story = {
+export const Toast = meta.story({
   parameters: {
     mockingDate: {
       now: '2024-01-01T00:00:00',
@@ -112,7 +100,7 @@ export const Toast: Story = {
       fake: ['Date', 'setTimeout', 'clearTimeout'],
     },
   },
-};
+});
 ```
 
 An explicit `fake` array **replaces** the default entirely — `fake: ['setTimeout']` fakes only `setTimeout` and leaves `Date` real. When `fake` is omitted (including the scalar form) it defaults to `['Date']`, so existing stories keep working as-is.
@@ -120,7 +108,7 @@ An explicit `fake` array **replaces** the default entirely — `fake: ['setTimeo
 Components that read the clock through `Temporal.Now` or a zero-argument `Intl.DateTimeFormat#format` need those APIs faked too — faking `Date` alone leaves them on the real clock:
 
 ```ts
-export const ChristmasBanner: Story = {
+export const ChristmasBanner = meta.story({
   parameters: {
     mockingDate: {
       now: '2024-12-25T12:00:00Z',
@@ -128,7 +116,7 @@ export const ChristmasBanner: Story = {
       fake: ['Date', 'Temporal', 'Intl'],
     },
   },
-};
+});
 ```
 
 > **rAF needs `performance`.** Animation libraries (framer-motion, react-spring, GSAP, Lottie, three.js) compute their delta from `performance.now()`, so fake `requestAnimationFrame` **and** `performance` together — faking rAF alone leaves the solver with a zero/NaN delta.
@@ -138,20 +126,20 @@ export const ChristmasBanner: Story = {
 Faking a timer _freezes_ it. To reach a settled "after" state (a dismissed toast, a finished count-up, an elapsed countdown), advance the clock from a story's `play` function with `advanceMockedTime` — **after** the component has mounted and registered its timers:
 
 ```ts
-import { advanceMockedTime } from 'storybook-addon-mock-date/preview';
+import { advanceMockedTime } from 'storybook-addon-mock-date';
 
-export const AfterDismiss: Story = {
+export const AfterDismiss = meta.story({
   parameters: { mockingDate: { fake: ['setTimeout'] } },
   play: async ({ canvas }) => {
     advanceMockedTime(4000); // run the auto-dismiss timeout
     // assert the dismissed state…
   },
-};
+});
 ```
 
-`runAllMockedTimers()` (drain every scheduled timer) and `getMockedClock()` (the raw `@sinonjs/fake-timers` clock) are also exported from `storybook-addon-mock-date/preview` for finer control.
+`runAllMockedTimers()` (drain every scheduled timer) and `getMockedClock()` (the raw `@sinonjs/fake-timers` clock) are exported alongside it for finer control.
 
-> Always import these helpers from `storybook-addon-mock-date/preview` — the same entry the decorator ships from. They share a single module-level clock, so importing from any other path gives you a disconnected instance and a "called without an installed clock" error.
+> Import these helpers from `storybook-addon-mock-date` or `storybook-addon-mock-date/preview` — both entries share the decorator's module-level clock. A copy of the addon bundled any other way gets a disconnected instance and a "called without an installed clock" error.
 
 > Advancing has to happen in `play`, not in a decorator: a component registers its timers in an effect that runs _after_ mount, so a decorator-level tick would fire before any timer exists.
 
@@ -169,32 +157,17 @@ This is intended for ad-hoc exploration — checking how a "happy birthday" bann
 
 #### Disabling the toolbar (decorator-only mode)
 
-If you want the date mocking but don't want the clock icon in the toolbar, register the preview entry directly in `.storybook/preview.ts` instead of listing the addon in `.storybook/main.ts`:
-
-```ts
-// .storybook/preview.ts
-import type { Preview } from '@storybook/your-renderer';
-import mockDate from 'storybook-addon-mock-date/preview';
-
-const preview: Preview = {
-  ...mockDate,
-  parameters: {
-    mockingDate: new Date(2024, 0, 1),
-  },
-};
-
-export default preview;
-```
+The toolbar comes from the `main.ts` entry and the decorator from the `preview.ts` one. If you want the date mocking without the clock icon, keep `mockDate()` in `.storybook/preview.ts` and leave the addon out of `.storybook/main.ts`:
 
 ```ts
 // .storybook/main.ts
-const config: StorybookConfig = {
+export default defineMain({
   // 'storybook-addon-mock-date' is intentionally not listed here
   addons: [/* ... */],
-};
+});
 ```
 
-The decorator runs the same way; only the toolbar manager bundle is skipped.
+The decorator runs the same way; only the toolbar manager bundle is skipped. With a plain-object `preview.ts`, spread the `/preview` entry into it instead (`import mockDate from 'storybook-addon-mock-date/preview'`, then `...mockDate`).
 
 ### What gets mocked
 
@@ -219,13 +192,14 @@ If you need each story on a docs page to keep its own `mockingDate` for ongoing 
 
 ```ts
 // .storybook/preview.ts
-const preview: Preview = {
+export default definePreview({
+  addons: [mockDate()],
   parameters: {
     docs: {
       story: { inline: false },
     },
   },
-};
+});
 ```
 
 Each iframe gets its own globals, so the mocks no longer leak between stories. The tradeoff is the extra iframe startup cost per story on the page.
