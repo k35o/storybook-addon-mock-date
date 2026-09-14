@@ -87,7 +87,7 @@ export default definePreview({
 });
 ```
 
-A story whose merged `mockingDate` is `undefined` reverts the system clock to the moment the preview iframe loaded, so subsequent stories continue to see a deterministic value rather than continuing to drift forward.
+A story whose merged `mockingDate` is `undefined` runs on the real clock: the decorator uninstalls the fake one, so `Date` and any timers an earlier story faked go back to their native implementations.
 
 ### Faking other timers
 
