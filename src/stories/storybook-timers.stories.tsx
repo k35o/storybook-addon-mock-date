@@ -2,6 +2,7 @@ import { expect } from 'storybook/test';
 
 import preview from '../../.storybook/preview';
 import { CurrentTime } from './current-time';
+import { waitRealMs } from './wait-real-ms';
 
 const meta = preview.meta({
   component: CurrentTime,
@@ -12,21 +13,6 @@ const meta = preview.meta({
 // once the story has rendered. These mimic one such timer.
 let armedBeforeClock: ReturnType<typeof setTimeout> | undefined;
 let armedTimerFired = false;
-
-// setTimeout is faked in this story, so wait on requestAnimationFrame, which
-// stays real.
-const waitRealMs = (ms: number): Promise<void> =>
-  new Promise((resolve) => {
-    const start = performance.now();
-    const tick = () => {
-      if (performance.now() - start >= ms) {
-        resolve();
-        return;
-      }
-      requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
-  });
 
 export const ClearsTimersArmedBeforeTheClock = meta.story({
   parameters: {
