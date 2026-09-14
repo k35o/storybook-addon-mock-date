@@ -31,3 +31,28 @@ export const AddParametersAtMeta = meta.story({
     );
   },
 });
+
+// Without a date, clock readers have no instant to freeze at, so the story
+// runs on the real clock rather than the epoch.
+export const ClockReadersWithoutADateKeepTheRealClock = meta.story({
+  parameters: {
+    mockingDate: { fake: ['Date'] },
+  },
+  play: async ({ canvas }) => {
+    await expect(canvas.getByRole('time')).not.toHaveTextContent(
+      '1970-01-01T00:00:00.000Z',
+    );
+  },
+});
+
+// A timer API still needs a clock, which starts at the epoch.
+export const TimersWithoutADateStartAtTheEpoch = meta.story({
+  parameters: {
+    mockingDate: { fake: ['Date', 'setInterval'] },
+  },
+  play: async ({ canvas }) => {
+    await expect(canvas.getByRole('time')).toHaveTextContent(
+      '1970-01-01T00:00:00.000Z',
+    );
+  },
+});
