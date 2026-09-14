@@ -4,7 +4,8 @@ import type { FC } from 'react';
 /**
  * A minimal auto-dismissing toast. It mounts visible and hides itself after
  * `duration` ms via `setTimeout` — exactly the kind of timer-driven UI that
- * races the screenshot in VRT unless `setTimeout` is faked.
+ * races the screenshot in VRT unless `setTimeout` is faked — or when its
+ * close button is clicked.
  */
 export const AutoDismissToast: FC<{ message: string; duration?: number }> = ({
   message,
@@ -24,5 +25,17 @@ export const AutoDismissToast: FC<{ message: string; duration?: number }> = ({
   if (!visible) {
     return null;
   }
-  return <output>{message}</output>;
+  return (
+    <div>
+      <output>{message}</output>
+      <button
+        type="button"
+        onClick={() => {
+          setVisible(false);
+        }}
+      >
+        閉じる
+      </button>
+    </div>
+  );
 };

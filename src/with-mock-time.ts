@@ -81,6 +81,26 @@ const DEFAULT_FAKE_KEY = fakeKeyOf(DEFAULT_FAKE);
 const isDefaultFake = (fake: FakeableTimer[]): boolean =>
   fakeKeyOf(fake) === DEFAULT_FAKE_KEY;
 
+// user-event, and Testing Library under Storybook's React renderer, wait on a
+// zero-delay timeout inside every interaction and query, so a frozen one hangs
+// `userEvent` and `findBy*` in `play`. Such a timeout is due at the mocked
+// instant anyway, so it runs on the real timer and time stays frozen; only
+// delays of at least 1 ms wait for the clock. `clock.uninstall()` restores the
+// native `setTimeout`, which drops this wrapper along with the fake.
+const runZeroDelayTimeoutsNatively = (
+  nativeSetTimeout: typeof setTimeout,
+): void => {
+  const fakeSetTimeout = globalThis.setTimeout;
+  globalThis.setTimeout = ((
+    handler: TimerHandler,
+    timeout?: number,
+    ...args: unknown[]
+  ) =>
+    (timeout ?? 0) >= 1
+      ? fakeSetTimeout(handler, timeout, ...args)
+      : nativeSetTimeout(handler, timeout, ...args)) as typeof setTimeout;
+};
+
 export const withMockTime = (
   StoryFn: PartialStoryFn,
   context: StoryContext,
@@ -122,15 +142,19 @@ export const withMockTime = (
     // `ignoreMissingTimers` keeps stories alive in environments that lack one
     // of the requested APIs (e.g. no native `Temporal` in Safari yet) —
     // fake-timers throws on absent globals otherwise.
-    // `shouldClearNativeTimers` lets Storybook cancel timers it armed before
-    // this clock existed (e.g. the "preparing story" spinner); the faked
-    // `clearTimeout` would otherwise ignore them.
+    // `shouldClearNativeTimers` lets the faked `clearTimeout` cancel native
+    // timers too: the ones Storybook armed before this clock existed (e.g. the
+    // "preparing story" spinner) and the zero-delay timeouts routed below.
+    const nativeSetTimeout = globalThis.setTimeout;
     clock = FakeTimers.install({
       toFake: fake,
       now: now ?? 0,
       ignoreMissingTimers: true,
       shouldClearNativeTimers: true,
     });
+    if (fake.includes('setTimeout')) {
+      runZeroDelayTimeoutsNatively(nativeSetTimeout);
+    }
     installedFake = nextKey;
   }
 
