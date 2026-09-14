@@ -1,6 +1,6 @@
 import { TimeIcon } from '@storybook/icons';
 import React, { memo, useCallback } from 'react';
-import { ToggleButton, WithTooltip } from 'storybook/internal/components';
+import { PopoverProvider, ToggleButton } from 'storybook/internal/components';
 import { useGlobals } from 'storybook/manager-api';
 
 import { GLOBAL_KEY } from './constants';
@@ -86,16 +86,14 @@ export const Tool = memo(function MockingDateTool() {
   }, [updateGlobals]);
 
   return (
-    <WithTooltip
+    <PopoverProvider
+      ariaLabel="Mocked date"
       placement="bottom"
-      trigger="click"
-      closeOnOutsideClick
-      tooltip={
+      popover={
         <Picker value={current} onChange={handleChange} onClear={handleClear} />
       }
     >
       <ToggleButton
-        key={GLOBAL_KEY}
         ariaLabel="Override mocked date"
         variant="ghost"
         padding="small"
@@ -103,6 +101,6 @@ export const Tool = memo(function MockingDateTool() {
       >
         <TimeIcon />
       </ToggleButton>
-    </WithTooltip>
+    </PopoverProvider>
   );
 });
