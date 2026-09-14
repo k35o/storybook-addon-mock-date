@@ -42,3 +42,10 @@ export const AfterDismiss = meta.story({
     await expect(canvas.queryByRole('status')).not.toBeInTheDocument();
   },
 });
+
+export const DismissedByTheCloseButton = meta.story({
+  play: async ({ canvas, userEvent }) => {
+    await userEvent.click(canvas.getByRole('button', { name: '閉じる' }));
+    await expect(canvas.queryByRole('status')).not.toBeInTheDocument();
+  },
+});
