@@ -4,7 +4,8 @@ A [Storybook](https://storybook.js.org/) addon that mocks the JavaScript `Date` 
 
 ## Requirements
 
-- Storybook `^10.0.0`
+- Storybook `^11.0.0`
+- Node.js `>=22.12.0` (Storybook 11's own requirement)
 - Renderer-agnostic — the addon ships a preview decorator that works with any Storybook framework (React, Vue, Svelte, etc.)
 
 ## Installation
