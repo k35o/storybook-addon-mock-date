@@ -1,10 +1,10 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
-import { advanceMockedTime } from 'storybook-addon-mock-date/preview';
+import { advanceMockedTime } from 'storybook-addon-mock-date';
 import { expect } from 'storybook/test';
 
+import preview from '../../.storybook/preview';
 import { AutoDismissToast } from './auto-dismiss-toast';
 
-const meta = {
+const meta = preview.meta({
   component: AutoDismissToast,
   args: { message: '保存しました', duration: 4000 },
   parameters: {
@@ -15,11 +15,7 @@ const meta = {
       fake: ['Date', 'setTimeout', 'clearTimeout'],
     },
   },
-} satisfies Meta<typeof AutoDismissToast>;
-
-export default meta;
-
-type Story = StoryObj<typeof meta>;
+});
 
 // setTimeout is faked, so yield through a real rAF to let React commit the
 // state update produced by advancing the clock.
@@ -31,18 +27,18 @@ const flush = (): Promise<void> =>
   });
 
 // Frozen at t=0: the toast stays visible because its timer never auto-fires.
-export const Shown: Story = {
+export const Shown = meta.story({
   play: async ({ canvas }) => {
     await expect(canvas.getByRole('status')).toHaveTextContent('保存しました');
   },
-};
+});
 
 // Advance past the duration inside play to capture the dismissed state.
-export const AfterDismiss: Story = {
+export const AfterDismiss = meta.story({
   play: async ({ canvas }) => {
     await expect(canvas.getByRole('status')).toBeInTheDocument();
     advanceMockedTime(4000);
     await flush();
     await expect(canvas.queryByRole('status')).not.toBeInTheDocument();
   },
-};
+});
