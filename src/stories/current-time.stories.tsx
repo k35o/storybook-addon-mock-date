@@ -1,23 +1,19 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect } from 'storybook/test';
 
+import preview from '../../.storybook/preview';
 import { CurrentTime } from './current-time';
 
 const metaDate = new Date(2023, 0, 1);
 const storyDate = new Date(2023, 6, 1);
 
-const meta = {
+const meta = preview.meta({
   component: CurrentTime,
   parameters: {
     mockingDate: metaDate,
   },
-} satisfies Meta<typeof CurrentTime>;
+});
 
-export default meta;
-
-type Story = StoryObj<typeof meta>;
-
-export const AddParametersAtStory: Story = {
+export const AddParametersAtStory = meta.story({
   parameters: {
     mockingDate: storyDate,
   },
@@ -26,12 +22,12 @@ export const AddParametersAtStory: Story = {
       storyDate.toISOString(),
     );
   },
-};
+});
 
-export const AddParametersAtMeta: Story = {
+export const AddParametersAtMeta = meta.story({
   play: async ({ canvas }) => {
     await expect(canvas.getByRole('time')).toHaveTextContent(
       metaDate.toISOString(),
     );
   },
-};
+});
