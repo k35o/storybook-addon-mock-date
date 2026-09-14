@@ -13,7 +13,7 @@ import type {
 let clock: FakeTimers.Clock | undefined;
 let installedFake: string | undefined;
 
-const DEFAULT_FAKE: FakeableTimer[] = ['Date'];
+const DEFAULT_FAKE: FakeableTimer[] = ['Date', 'Temporal', 'Intl'];
 
 const isInstantLike = (value: unknown): value is TemporalInstantLike =>
   typeof value === 'object' &&
@@ -76,11 +76,6 @@ export const normalizeMockingDate = (
 
 const fakeKeyOf = (fake: FakeableTimer[]): string => fake.toSorted().join(',');
 
-const DEFAULT_FAKE_KEY = fakeKeyOf(DEFAULT_FAKE);
-
-const isDefaultFake = (fake: FakeableTimer[]): boolean =>
-  fakeKeyOf(fake) === DEFAULT_FAKE_KEY;
-
 // user-event, and Testing Library under Storybook's React renderer, wait on a
 // zero-delay timeout inside every interaction and query, so a frozen one hangs
 // `userEvent` and `findBy*` in `play`. Such a timeout is due at the mocked
@@ -110,9 +105,10 @@ export const withMockTime = (
     context.globals[GLOBAL_KEY] as MockingDateValue | undefined,
   );
 
-  // With no date and only the default `['Date']` fake set there is nothing
-  // to mock.
-  const shouldMock = now !== undefined || !isDefaultFake(fake);
+  // Without a date, the clock readers in the default set have no instant to
+  // freeze at; only a timer API needs a clock, which then starts at the epoch.
+  const shouldMock =
+    now !== undefined || fake.some((method) => !DEFAULT_FAKE.includes(method));
 
   if (!shouldMock) {
     if (clock) {

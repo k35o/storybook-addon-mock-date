@@ -20,14 +20,18 @@ export type FakeableTimer = FakeMethod;
 
 /** Object form of the `mockingDate` parameter. */
 export type MockingDateConfig = {
-  /** The instant to freeze the clock at. Defaults to the epoch (`0`). */
+  /**
+   * The instant to freeze the clock at. When omitted (and the toolbar sets no
+   * date), nothing is mocked unless `fake` lists a timer API — then the clock
+   * starts at the epoch (`0`).
+   */
   now?: MockingDateValue;
   /**
-   * Which timer / clock APIs to fake. Defaults to `['Date']`. Add
-   * `'Temporal'` / `'Intl'` to freeze those clock readers too, or timer APIs
+   * Which timer / clock APIs to fake. Defaults to the APIs that read the
+   * current time: `['Date', 'Temporal', 'Intl']`. Add timer APIs
    * (`setTimeout`, `setInterval`, `requestAnimationFrame`, `performance`,
    * etc.) to intercept scheduling. An explicit array replaces the default
-   * entirely.
+   * entirely, so list the clock readers you still want frozen alongside them.
    */
   fake?: FakeableTimer[];
 };
