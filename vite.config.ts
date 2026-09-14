@@ -1,9 +1,5 @@
-import { fileURLToPath } from 'node:url';
-
 import { fmt, react } from '@k8o/oxc-config';
-import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
 import reactPlugin from '@vitejs/plugin-react';
-import { playwright } from '@vitest/browser-playwright';
 import { defineConfig } from 'vite-plus';
 
 export default defineConfig({
@@ -67,32 +63,6 @@ export default defineConfig({
       '@sinonjs/fake-timers',
     ],
     clean: true,
-  },
-  test: {
-    projects: [
-      {
-        extends: true,
-        plugins: [
-          storybookTest({
-            configDir: fileURLToPath(new URL('./.storybook', import.meta.url)),
-            storybookScript: 'pnpm storybook --ci',
-          }),
-        ],
-        optimizeDeps: {
-          include: ['@sinonjs/fake-timers'],
-        },
-        test: {
-          name: { label: 'storybook', color: 'magenta' },
-          browser: {
-            enabled: true,
-            provider: playwright(),
-            headless: true,
-            screenshotFailures: false,
-            instances: [{ browser: 'chromium' }],
-          },
-        },
-      },
-    ],
   },
   plugins: [reactPlugin()],
 });
