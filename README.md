@@ -49,6 +49,8 @@ Don't skip the `preview.ts` entry. Once `preview.ts` calls `definePreview` ([CSF
 
 If your `preview.ts` still exports a plain object instead of calling `definePreview`, the `main.ts` entry alone is enough: Storybook applies the addon's preview annotations for you.
 
+`npx storybook add storybook-addon-mock-date` also works. It adds the `main.ts` entry and puts `import * as storybookAddonMockDate from 'storybook-addon-mock-date/preview'` into `definePreview`'s `addons`, which applies the decorator but leaves `mockingDate` untyped — replace it with `mockDate()` to get the types.
+
 ## Usage
 
 Pass a `Date`, a millisecond timestamp, an ISO 8601 string, or a `Temporal.Instant` / `Temporal.ZonedDateTime` via the `mockingDate` parameter at the story, meta, or preview level. Storybook merges parameters with the most specific value winning, so the precedence is **story > meta > preview**.
@@ -85,7 +87,7 @@ export default definePreview({
 });
 ```
 
-A story whose merged `mockingDate` is `undefined` reverts the system clock to the moment the preview iframe loaded, so subsequent stories continue to see a deterministic value rather than continuing to drift forward.
+A story whose merged `mockingDate` is `undefined` runs on the real clock: the decorator uninstalls the fake one, so `Date` and any timers an earlier story faked go back to their native implementations.
 
 ### Faking other timers
 
@@ -120,6 +122,10 @@ export const ChristmasBanner = meta.story({
 ```
 
 > **rAF needs `performance`.** Animation libraries (framer-motion, react-spring, GSAP, Lottie, three.js) compute their delta from `performance.now()`, so fake `requestAnimationFrame` **and** `performance` together — faking rAF alone leaves the solver with a zero/NaN delta.
+
+> **Faking `setTimeout` also freezes Storybook's own timers.** After `play`, Storybook waits on `setTimeout` before it reports the story as rendered, so in the Storybook UI such a story never finishes rendering: the Interactions panel stays on "RUNS" without listing any step, and `STORY_RENDERED` is never emitted, so anything waiting for that event waits forever. Tests run through `@storybook/addon-vitest` take a different path and are unaffected. If a tool captures stories by waiting for `STORY_RENDERED`, leave `setTimeout` real in the stories it has to capture.
+
+> **Don't mix in `vi.useFakeTimers()`.** The addon installs `@sinonjs/fake-timers` itself and keeps its clock installed between stories, so `vi.useFakeTimers()` in a Storybook that relies on its mocking fails with "Can't install fake timers twice on the same global object" — even in a story the addon doesn't mock. Fake timers through the `fake` option and advance them with `advanceMockedTime` / `runAllMockedTimers` instead.
 
 ### Advancing time in `play`
 
