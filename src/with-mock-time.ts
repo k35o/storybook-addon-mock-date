@@ -122,10 +122,14 @@ export const withMockTime = (
     // `ignoreMissingTimers` keeps stories alive in environments that lack one
     // of the requested APIs (e.g. no native `Temporal` in Safari yet) —
     // fake-timers throws on absent globals otherwise.
+    // `shouldClearNativeTimers` lets Storybook cancel timers it armed before
+    // this clock existed (e.g. the "preparing story" spinner); the faked
+    // `clearTimeout` would otherwise ignore them.
     clock = FakeTimers.install({
       toFake: fake,
       now: now ?? 0,
       ignoreMissingTimers: true,
+      shouldClearNativeTimers: true,
     });
     installedFake = nextKey;
   }
