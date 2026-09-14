@@ -125,6 +125,8 @@ export const ChristmasBanner = meta.story({
 
 > **Faking `setTimeout` also freezes Storybook's own timers.** After `play`, Storybook waits on `setTimeout` before it reports the story as rendered, so in the Storybook UI such a story never finishes rendering: the Interactions panel stays on "RUNS" without listing any step, and `STORY_RENDERED` is never emitted, so anything waiting for that event waits forever. Tests run through `@storybook/addon-vitest` take a different path and are unaffected. If a tool captures stories by waiting for `STORY_RENDERED`, leave `setTimeout` real in the stories it has to capture.
 
+> **Don't mix in `vi.useFakeTimers()`.** The addon installs `@sinonjs/fake-timers` itself and keeps its clock installed between stories, so `vi.useFakeTimers()` in a Storybook that relies on its mocking fails with "Can't install fake timers twice on the same global object" — even in a story the addon doesn't mock. Fake timers through the `fake` option and advance them with `advanceMockedTime` / `runAllMockedTimers` instead.
+
 ### Advancing time in `play`
 
 Faking a timer _freezes_ it. To reach a settled "after" state (a dismissed toast, a finished count-up, an elapsed countdown), advance the clock from a story's `play` function with `advanceMockedTime` — **after** the component has mounted and registered its timers:
