@@ -56,7 +56,7 @@ const Picker = memo(function MockingDatePicker({
         />
       </label>
       <button type="button" onClick={onClear}>
-        Reset to real time
+        Clear override
       </button>
     </div>
   );

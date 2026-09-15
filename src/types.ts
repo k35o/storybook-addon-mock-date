@@ -18,29 +18,64 @@ export type MockingDateValue = Date | number | string | TemporalInstantLike;
  */
 export type FakeableTimer = FakeMethod;
 
-/** Object form of the `mockingDate` parameter. */
-export type MockingDateConfig = {
-  /**
-   * The instant to freeze the clock at. When omitted (and the toolbar sets no
-   * date), nothing is mocked unless `fake` lists a timer API — then the clock
-   * starts at the epoch (`0`).
-   */
-  now?: MockingDateValue;
-  /**
-   * Which timer / clock APIs to fake. Defaults to the APIs that read the
-   * current time: `['Date', 'Temporal', 'Intl']`. Add timer APIs
-   * (`setTimeout`, `setInterval`, `requestAnimationFrame`, `performance`,
-   * etc.) to intercept scheduling. An explicit array replaces the default
-   * entirely, so list the clock readers you still want frozen alongside them.
-   */
-  fake?: FakeableTimer[];
-  /**
-   * Run the story on the real clock, ignoring any `mockingDate` inherited
-   * from the meta or preview level and any toolbar override. Set it back to
-   * `false` on a story to re-enable mocking inside a disabled meta.
-   */
-  disable?: boolean;
-};
+/**
+ * The APIs that read the current time. They are faked by default and only
+ * make sense together with a `now` to freeze at.
+ */
+export type ClockReader = Extract<FakeableTimer, 'Date' | 'Temporal' | 'Intl'>;
+
+/**
+ * The scheduling APIs (`setTimeout`, `setInterval`, `requestAnimationFrame`,
+ * `performance`, …). Opt-in: faking them changes how a component behaves,
+ * not just what time it sees.
+ */
+export type SchedulingApi = Exclude<FakeableTimer, ClockReader>;
+
+/**
+ * Object form of the `mockingDate` parameter. Three shapes:
+ *
+ * - `{ now, fake? }` freezes the clock at `now`. `fake` replaces the default
+ *   `['Date', 'Temporal', 'Intl']` entirely, so list the clock readers you
+ *   still want frozen next to any scheduling APIs.
+ * - `{ fake: [...scheduling APIs] }` intercepts timers without a date: the
+ *   clock readers stay real and the timers run on a clock that starts at the
+ *   epoch. A `fake` array of clock readers alone would mock nothing, so it is
+ *   rejected here.
+ * - `{ disable }` opts a story out (or back in with `false`).
+ */
+export type MockingDateConfig =
+  | {
+      /** The instant to freeze the clock at. */
+      now: MockingDateValue;
+      /**
+       * Which APIs to fake, forwarded to `@sinonjs/fake-timers`. Defaults to
+       * the clock readers: `['Date', 'Temporal', 'Intl']`. An explicit array
+       * replaces the default entirely.
+       */
+      fake?: FakeableTimer[];
+      /** See {@link MockingDateConfig}. */
+      disable?: boolean;
+    }
+  | {
+      now?: undefined;
+      /**
+       * Scheduling APIs to intercept while the clock readers stay real. The
+       * clock they run on starts at the epoch.
+       */
+      fake: SchedulingApi[];
+      /** See {@link MockingDateConfig}. */
+      disable?: boolean;
+    }
+  | {
+      now?: undefined;
+      fake?: undefined;
+      /**
+       * Run the story on the real clock, ignoring any `mockingDate` inherited
+       * from the meta or preview level and any toolbar override. `false`
+       * re-enables mocking inside a disabled meta.
+       */
+      disable: boolean;
+    };
 
 /**
  * The `mockingDate` parameter accepts either a bare date value (shorthand for
