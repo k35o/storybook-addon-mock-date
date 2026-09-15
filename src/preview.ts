@@ -1,7 +1,7 @@
 import type { Renderer, ProjectAnnotations } from 'storybook/internal/types';
 
 import { GLOBAL_KEY } from './constants';
-import { withMockTime } from './with-mock-time';
+import { installMockedClock } from './with-mock-time';
 
 // `storybook add` registers non-core addons as
 // `import * as x from '<addon>/preview'`; exporting the annotations by name
@@ -9,11 +9,11 @@ import { withMockTime } from './with-mock-time';
 export const initialGlobals: ProjectAnnotations<Renderer>['initialGlobals'] = {
   [GLOBAL_KEY]: undefined,
 };
-export const decorators: ProjectAnnotations<Renderer>['decorators'] = [
-  withMockTime,
+export const beforeEach: ProjectAnnotations<Renderer>['beforeEach'] = [
+  installMockedClock,
 ];
 
-const preview: ProjectAnnotations<Renderer> = { initialGlobals, decorators };
+const preview: ProjectAnnotations<Renderer> = { initialGlobals, beforeEach };
 
 export default preview;
 

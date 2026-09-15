@@ -9,8 +9,8 @@ const meta = preview.meta({
 });
 
 // Storybook arms its own timers (e.g. the "preparing story" spinner) with the
-// native setTimeout before the decorator installs the clock, and clears them
-// once the story has rendered. These mimic one such timer.
+// native setTimeout before the addon installs the clock, and clears them once
+// the story has rendered. These mimic one such timer.
 let armedBeforeClock: ReturnType<typeof setTimeout> | undefined;
 let armedTimerFired = false;
 

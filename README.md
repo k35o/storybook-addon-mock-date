@@ -6,7 +6,7 @@ A [Storybook](https://storybook.js.org/) addon that mocks the current time — `
 
 - Storybook `^11.0.0`
 - Node.js `>=22.12.0` (Storybook 11's own requirement)
-- Renderer-agnostic — the addon ships a preview decorator that works with any Storybook framework (React, Vue, Svelte, etc.)
+- Renderer-agnostic — the addon installs the mock from a preview `beforeEach` hook, which works with any Storybook framework (React, Vue, Svelte, etc.)
 
 ## Installation
 
@@ -16,7 +16,7 @@ First, install the package.
 npm install --save-dev storybook-addon-mock-date
 ```
 
-Then, register it in two places: `.storybook/preview.ts` applies the decorator, and `.storybook/main.ts` adds the toolbar.
+Then, register it in two places: `.storybook/preview.ts` installs the mock, and `.storybook/main.ts` adds the toolbar.
 
 ```ts
 // .storybook/preview.ts
@@ -27,7 +27,7 @@ import mockDate from 'storybook-addon-mock-date';
 
 export default definePreview({
   // ...rest of preview
-  addons: [mockDate()], // 👈 applies the decorator
+  addons: [mockDate()], // 👈 installs the mock
 });
 ```
 
@@ -45,11 +45,11 @@ export default defineMain({
 });
 ```
 
-Don't skip the `preview.ts` entry. Once `preview.ts` calls `definePreview` ([CSF Next](https://storybook.js.org/docs/api/csf/csf-next), Storybook 11's default), Storybook ignores the preview annotations that addons register through `main.ts`, so without it the decorator never runs and every story silently sees the real clock. Registering through `definePreview` also types the `mockingDate` parameter and global in `preview.meta()` and `meta.story()`.
+Don't skip the `preview.ts` entry. Once `preview.ts` calls `definePreview` ([CSF Next](https://storybook.js.org/docs/api/csf/csf-next), Storybook 11's default), Storybook ignores the preview annotations that addons register through `main.ts`, so without it the mock is never installed and every story silently sees the real clock. Registering through `definePreview` also types the `mockingDate` parameter and global in `preview.meta()` and `meta.story()`.
 
 If your `preview.ts` still exports a plain object instead of calling `definePreview`, the `main.ts` entry alone is enough: Storybook applies the addon's preview annotations for you.
 
-`npx storybook add storybook-addon-mock-date` also works. It adds the `main.ts` entry and puts `import * as storybookAddonMockDate from 'storybook-addon-mock-date/preview'` into `definePreview`'s `addons`, which applies the decorator but leaves `mockingDate` untyped — replace it with `mockDate()` to get the types.
+`npx storybook add storybook-addon-mock-date` also works. It adds the `main.ts` entry and puts `import * as storybookAddonMockDate from 'storybook-addon-mock-date/preview'` into `definePreview`'s `addons`, which installs the mock but leaves `mockingDate` untyped — replace it with `mockDate()` to get the types.
 
 ## Usage
 
@@ -87,7 +87,21 @@ export default definePreview({
 });
 ```
 
-A story whose merged `mockingDate` is `undefined` runs on the real clock: the decorator uninstalls the fake one, so `Date`, `Temporal`, `Intl`, and any timers an earlier story faked go back to their native implementations.
+The mock lives as long as the story. It is installed before the story's own `beforeEach` hooks run — so they already see the mocked time — and removed when Storybook tears the story down, so a mocked story never leaks its clock into the next one. A story whose merged `mockingDate` is `undefined` runs on the real clock.
+
+### Opting a story out
+
+When a meta- or preview-level `mockingDate` applies to a story that must run on the real clock — it fakes timers itself, or a library it renders trips over the mock — set `disable`:
+
+```ts
+export const LiveClock = meta.story({
+  parameters: {
+    mockingDate: { disable: true },
+  },
+});
+```
+
+A disabled story ignores every inherited `mockingDate` and the toolbar override. Set `disable: false` on a story to turn the mock back on inside a disabled meta.
 
 ### Faking other timers
 
@@ -127,7 +141,7 @@ export const ChristmasBanner = meta.story({
 
 > **Faking `setTimeout` also freezes Storybook's own timers.** After `play`, Storybook waits on `setTimeout` before it reports the story as rendered, so in the Storybook UI such a story never finishes rendering: the Interactions panel stays on "RUNS" without listing any step, and `STORY_RENDERED` is never emitted, so anything waiting for that event waits forever. Tests run through `@storybook/addon-vitest` take a different path and are unaffected. If a tool captures stories by waiting for `STORY_RENDERED`, leave `setTimeout` real in the stories it has to capture.
 
-> **Don't mix in `vi.useFakeTimers()`.** The addon installs `@sinonjs/fake-timers` itself and keeps its clock installed between stories, so `vi.useFakeTimers()` in a Storybook that relies on its mocking fails with "Can't install fake timers twice on the same global object" — even in a story the addon doesn't mock. Fake timers through the `fake` option and advance them with `advanceMockedTime` / `runAllMockedTimers` instead.
+> **Don't mix in `vi.useFakeTimers()`.** The addon installs `@sinonjs/fake-timers` itself, so `vi.useFakeTimers()` in a mocked story fails with "Can't install fake timers twice on the same global object". Fake timers through the `fake` option and advance them with `advanceMockedTime` / `runAllMockedTimers` instead. A story that has to run its own fake timers can opt out of the addon with `mockingDate: { disable: true }`.
 
 ### Advancing time in `play`
 
@@ -149,7 +163,7 @@ export const AfterDismiss = meta.story({
 
 > Import these helpers from `storybook-addon-mock-date` or `storybook-addon-mock-date/preview` — both entries share the decorator's module-level clock. A copy of the addon bundled any other way gets a disconnected instance and a "called without an installed clock" error.
 
-> Advancing has to happen in `play`, not in a decorator: a component registers its timers in an effect that runs _after_ mount, so a decorator-level tick would fire before any timer exists.
+> Advancing has to happen in `play`, not in `beforeEach`: a component registers its timers in an effect that runs _after_ mount, so a `beforeEach`-level tick would fire before any timer exists.
 
 ### Toolbar override
 
@@ -163,9 +177,9 @@ The full precedence with the toolbar in play is **toolbar (globals) > story > me
 
 This is intended for ad-hoc exploration — checking how a "happy birthday" banner looks on the actual day, walking through the same story across a year, etc. — without editing source files. Permanent mocking should still go through `parameters.mockingDate` so the value lives in version control.
 
-#### Disabling the toolbar (decorator-only mode)
+#### Disabling the toolbar (mock only)
 
-The toolbar comes from the `main.ts` entry and the decorator from the `preview.ts` one. If you want the date mocking without the clock icon, keep `mockDate()` in `.storybook/preview.ts` and leave the addon out of `.storybook/main.ts`:
+The toolbar comes from the `main.ts` entry and the mock from the `preview.ts` one. If you want the date mocking without the clock icon, keep `mockDate()` in `.storybook/preview.ts` and leave the addon out of `.storybook/main.ts`:
 
 ```ts
 // .storybook/main.ts
@@ -175,7 +189,7 @@ export default defineMain({
 });
 ```
 
-The decorator runs the same way; only the toolbar manager bundle is skipped. With a plain-object `preview.ts`, spread the `/preview` entry into it instead (`import mockDate from 'storybook-addon-mock-date/preview'`, then `...mockDate`).
+The mock installs the same way; only the toolbar manager bundle is skipped. With a plain-object `preview.ts`, spread the `/preview` entry into it instead (`import mockDate from 'storybook-addon-mock-date/preview'`, then `...mockDate`).
 
 ### What gets mocked
 
@@ -192,7 +206,7 @@ By default the APIs that read the current time are replaced; scheduling APIs are
 ### What stays real
 
 - **The timezone.** The addon freezes the _instant_, not the environment: `Date.prototype.getTimezoneOffset()`, `Intl.DateTimeFormat().resolvedOptions().timeZone`, and `Temporal.Now.timeZoneId()` all keep reporting the host's timezone. To render a story as if in another timezone, launch the browser with one — e.g. Playwright's `timezoneId` option or the `TZ` environment variable.
-- **Values captured before the decorator runs.** A module-scope `const now = new Date()` is evaluated at import time, before any story's mock is installed. Likewise, an `Intl.DateTimeFormat` created at module scope is the native one, so its zero-argument `format()` keeps reading the real clock.
+- **Values captured before the mock is installed.** A module-scope `const now = new Date()` is evaluated at import time, before any story's mock is installed. Likewise, an `Intl.DateTimeFormat` created at module scope is the native one, so its zero-argument `format()` keeps reading the real clock.
 - **Other realms.** Web Workers, Service Workers, and other iframes have their own globals; the mock is installed only in the preview iframe.
 - **Everything outside the JS clock.** CSS animations/transitions, the Web Animations API, `IntersectionObserver`/`ResizeObserver`, `AbortSignal.timeout()`, and network requests are unaffected — disable or mock those separately for stable visual snapshots.
 
