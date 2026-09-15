@@ -187,30 +187,66 @@ const requireClock = (method: string): FakeTimers.Clock => {
   return clock;
 };
 
+// Captured when the addon loads, before any story installs a clock, so the
+// wait below stays real even in a story that fakes `requestAnimationFrame`.
+// The DOM types declare it unconditionally, but portable stories can run
+// where there is no frame to wait for.
+const nativeRequestAnimationFrame = (
+  globalThis as { requestAnimationFrame?: typeof requestAnimationFrame }
+).requestAnimationFrame?.bind(globalThis);
+
+// A timer that fires under `tick()` only queues the UI update it causes:
+// React commits it in a task it posts through a MessageChannel. Posted
+// messages share one task source, so a round-trip on a channel of our own
+// runs after that commit; the animation frame afterwards lets the browser
+// paint the result before a screenshot is taken.
+const waitForCommit = async (): Promise<void> => {
+  await new Promise<void>((resolve) => {
+    const channel = new MessageChannel();
+    channel.port1.addEventListener(
+      'message',
+      () => {
+        channel.port1.close();
+        resolve();
+      },
+      { once: true },
+    );
+    // Unlike assigning `onmessage`, `addEventListener` does not start the port.
+    channel.port1.start();
+    channel.port2.postMessage(undefined);
+  });
+  if (nativeRequestAnimationFrame) {
+    await new Promise<void>((resolve) => {
+      nativeRequestAnimationFrame(() => {
+        resolve();
+      });
+    });
+  }
+};
+
 /**
  * Advance the mocked clock by `ms` milliseconds, running any timers
  * (`setTimeout` / `setInterval` / `requestAnimationFrame` / …) scheduled
- * within that window.
+ * within that window, then wait for the UI to commit and paint what they
+ * changed, so the next line of `play` can assert on it.
  *
  * Call this inside a story's `play` function — after the component has mounted
  * and registered its timers — to capture a settled "after" state. Ticking from
  * `beforeEach` would run before mount, when no component timer exists yet.
- *
- * Import it from `storybook-addon-mock-date` or `storybook-addon-mock-date/preview`
- * — both entries share the module-level clock the addon installs. Importing
- * from any other path gives you a disconnected clock instance and a "called
- * without an installed clock" error.
  */
-export const advanceMockedTime = (ms: number): void => {
+export const advanceMockedTime = async (ms: number): Promise<void> => {
   requireClock('advanceMockedTime').tick(ms);
+  await waitForCommit();
 };
 
 /**
- * Run every currently-scheduled timer until the queue drains. Use inside
- * `play` to fast-forward to the fully settled state.
+ * Run every currently-scheduled timer until the queue drains, then wait for
+ * the UI to commit and paint. Use inside `play` to fast-forward to the fully
+ * settled state.
  */
-export const runAllMockedTimers = (): void => {
+export const runAllMockedTimers = async (): Promise<void> => {
   requireClock('runAllMockedTimers').runAll();
+  await waitForCommit();
 };
 
 /**

@@ -42,7 +42,7 @@ export const OneMillisecondTimeoutWaitsForTheClock = meta.story({
     }, 1);
     await waitRealMs(50);
     await expect(fired).toBe(false);
-    advanceMockedTime(1);
+    await advanceMockedTime(1);
     await expect(fired).toBe(true);
   },
 });

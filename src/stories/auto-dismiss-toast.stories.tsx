@@ -17,15 +17,6 @@ const meta = preview.meta({
   },
 });
 
-// setTimeout is faked, so yield through a real rAF to let React commit the
-// state update produced by advancing the clock.
-const flush = (): Promise<void> =>
-  new Promise((resolve) => {
-    requestAnimationFrame(() => {
-      resolve();
-    });
-  });
-
 // Frozen at t=0: the toast stays visible because its timer never auto-fires.
 export const Shown = meta.story({
   play: async ({ canvas }) => {
@@ -37,8 +28,7 @@ export const Shown = meta.story({
 export const AfterDismiss = meta.story({
   play: async ({ canvas }) => {
     await expect(canvas.getByRole('status')).toBeInTheDocument();
-    advanceMockedTime(4000);
-    await flush();
+    await advanceMockedTime(4000);
     await expect(canvas.queryByRole('status')).not.toBeInTheDocument();
   },
 });
