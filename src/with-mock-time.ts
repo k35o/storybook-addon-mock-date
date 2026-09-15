@@ -1,5 +1,5 @@
 import FakeTimers from '@sinonjs/fake-timers';
-import type { PartialStoryFn, StoryContext } from 'storybook/internal/types';
+import type { BeforeEach } from 'storybook/internal/types';
 
 import { GLOBAL_KEY, PARAM_KEY } from './constants';
 import type {
@@ -50,28 +50,36 @@ const isConfig = (value: unknown): value is MockingDateConfig =>
   !(value instanceof Date) &&
   ('now' in value || 'fake' in value || !isInstantLike(value));
 
-type NormalizedMockingDate = {
-  now: Date | number | undefined;
-  fake: FakeableTimer[];
-};
+type NormalizedMockingDate =
+  | { disabled: true }
+  | {
+      disabled: false;
+      now: Date | number | undefined;
+      fake: FakeableTimer[];
+    };
 
 /**
  * Resolve the `mockingDate` parameter (scalar or object form) together with
- * the toolbar global into a normalized `{ now, fake }`. The toolbar only ever
- * carries a date, so it overrides `now` while leaving `fake` untouched — that
- * keeps a story's `fake` set alive even when a date is picked interactively.
+ * the toolbar global into a normalized shape. The toolbar only ever carries a
+ * date, so it overrides `now` while leaving `fake` untouched — that keeps a
+ * story's `fake` set alive even when a date is picked interactively. A story
+ * that opts out with `disable: true` stays out even while the toolbar holds a
+ * date: it opted out because mocking breaks it, not because of the date.
  */
 export const normalizeMockingDate = (
   param: MockingDateParam | undefined,
   globalValue: MockingDateValue | undefined,
 ): NormalizedMockingDate => {
   const config: MockingDateConfig = isConfig(param) ? param : { now: param };
+  if (config.disable === true) {
+    return { disabled: true };
+  }
   const now = toDate(globalValue) ?? toDate(config.now);
   const fake =
     config.fake !== undefined && config.fake.length > 0
       ? config.fake
       : DEFAULT_FAKE;
-  return { now, fake };
+  return { disabled: false, now, fake };
 };
 
 const fakeKeyOf = (fake: FakeableTimer[]): string => fake.toSorted().join(',');
@@ -96,37 +104,49 @@ const runZeroDelayTimeoutsNatively = (
       : nativeSetTimeout(handler, timeout, ...args)) as typeof setTimeout;
 };
 
-export const withMockTime = (
-  StoryFn: PartialStoryFn,
-  context: StoryContext,
-) => {
-  const { now, fake } = normalizeMockingDate(
+const uninstallMockedClock = (): void => {
+  if (clock) {
+    clock.uninstall();
+    clock = undefined;
+    installedFake = undefined;
+  }
+};
+
+// Without a date, the clock readers in the default set have no instant to
+// freeze at; only a timer API needs a clock, which then starts at the epoch.
+const needsClock = (
+  normalized: NormalizedMockingDate,
+): normalized is Extract<NormalizedMockingDate, { disabled: false }> =>
+  !normalized.disabled &&
+  (normalized.now !== undefined ||
+    normalized.fake.some((method) => !DEFAULT_FAKE.includes(method)));
+
+/**
+ * Project-level `beforeEach`: installs the clock the story asks for and
+ * returns the cleanup that removes it. Storybook runs project hooks before
+ * component- and story-level ones, so the story's own `beforeEach` already
+ * sees the mocked time, and runs the cleanup when it tears the story down, so
+ * nothing leaks into the next story.
+ */
+export const installMockedClock: BeforeEach = (context) => {
+  const normalized = normalizeMockingDate(
     context.parameters[PARAM_KEY] as MockingDateParam | undefined,
     context.globals[GLOBAL_KEY] as MockingDateValue | undefined,
   );
 
-  // Without a date, the clock readers in the default set have no instant to
-  // freeze at; only a timer API needs a clock, which then starts at the epoch.
-  const shouldMock =
-    now !== undefined || fake.some((method) => !DEFAULT_FAKE.includes(method));
-
-  if (!shouldMock) {
-    if (clock) {
-      clock.uninstall();
-      clock = undefined;
-      installedFake = undefined;
-    }
-    // eslint-disable-next-line typescript/no-unsafe-return -- Storybook's PartialStoryFn return type is loosely typed
-    return StoryFn(context);
+  if (!needsClock(normalized)) {
+    uninstallMockedClock();
+    return uninstallMockedClock;
   }
+  const { now, fake } = normalized;
 
+  // The hook runs again on every rerender of the same story (args or globals
+  // changed) while the cleanup only runs at teardown, and stories on one docs
+  // page install in turn, so a clock may already be there. `toFake` cannot be
+  // changed on an installed clock: reinstall when the requested set differs.
   const nextKey = fakeKeyOf(fake);
-  // `toFake` cannot be changed on an already-installed clock, so reinstall
-  // whenever the requested set differs from what is currently installed.
   if (clock && installedFake !== nextKey) {
-    clock.uninstall();
-    clock = undefined;
-    installedFake = undefined;
+    uninstallMockedClock();
   }
 
   if (clock) {
@@ -154,8 +174,7 @@ export const withMockTime = (
     installedFake = nextKey;
   }
 
-  // eslint-disable-next-line typescript/no-unsafe-return -- Storybook's PartialStoryFn return type is loosely typed
-  return StoryFn(context);
+  return uninstallMockedClock;
 };
 
 const requireClock = (method: string): FakeTimers.Clock => {
@@ -175,10 +194,10 @@ const requireClock = (method: string): FakeTimers.Clock => {
  *
  * Call this inside a story's `play` function — after the component has mounted
  * and registered its timers — to capture a settled "after" state. Ticking from
- * a decorator would run before mount, when no component timer exists yet.
+ * `beforeEach` would run before mount, when no component timer exists yet.
  *
  * Import it from `storybook-addon-mock-date` or `storybook-addon-mock-date/preview`
- * — both entries share the module-level clock the decorator uses. Importing
+ * — both entries share the module-level clock the addon installs. Importing
  * from any other path gives you a disconnected clock instance and a "called
  * without an installed clock" error.
  */
@@ -199,6 +218,6 @@ export const runAllMockedTimers = (): void => {
  *
  * Prefer `advanceMockedTime` / `runAllMockedTimers`. Mutating the returned
  * clock directly (`uninstall` / `reset` / `setSystemTime`) bypasses the
- * decorator's internal tracking and can leave later stories in a broken state.
+ * addon's internal tracking and can leave later stories in a broken state.
  */
 export const getMockedClock = (): FakeTimers.Clock | undefined => clock;

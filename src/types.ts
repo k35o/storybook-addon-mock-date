@@ -34,6 +34,12 @@ export type MockingDateConfig = {
    * entirely, so list the clock readers you still want frozen alongside them.
    */
   fake?: FakeableTimer[];
+  /**
+   * Run the story on the real clock, ignoring any `mockingDate` inherited
+   * from the meta or preview level and any toolbar override. Set it back to
+   * `false` on a story to re-enable mocking inside a disabled meta.
+   */
+  disable?: boolean;
 };
 
 /**
