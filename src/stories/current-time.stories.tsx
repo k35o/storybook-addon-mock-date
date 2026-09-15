@@ -33,9 +33,11 @@ export const AddParametersAtMeta = meta.story({
 });
 
 // Without a date, clock readers have no instant to freeze at, so the story
-// runs on the real clock rather than the epoch.
+// runs on the real clock rather than the epoch. The type rejects this shape;
+// it still reaches the runtime from untyped CSF 3 stories.
 export const ClockReadersWithoutADateKeepTheRealClock = meta.story({
   parameters: {
+    // @ts-expect-error -- clock readers without a `now` mock nothing
     mockingDate: { fake: ['Date'] },
   },
   play: async ({ canvas }) => {
@@ -45,9 +47,11 @@ export const ClockReadersWithoutADateKeepTheRealClock = meta.story({
   },
 });
 
-// A timer API still needs a clock, which starts at the epoch.
+// A timer API still needs a clock, which starts at the epoch. Listing a clock
+// reader next to it without a `now` is rejected by the type as well.
 export const TimersWithoutADateStartAtTheEpoch = meta.story({
   parameters: {
+    // @ts-expect-error -- `Date` without a `now` needs the scalar or `now` form
     mockingDate: { fake: ['Date', 'setInterval'] },
   },
   play: async ({ canvas }) => {
