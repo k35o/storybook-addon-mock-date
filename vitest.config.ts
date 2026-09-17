@@ -13,6 +13,13 @@ export default defineConfig({
   test: {
     projects: [
       {
+        test: {
+          name: { label: 'unit', color: 'cyan' },
+          include: ['src/**/*.test.ts'],
+          environment: 'node',
+        },
+      },
+      {
         extends: true,
         plugins: [
           storybookTest({
