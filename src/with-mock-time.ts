@@ -70,14 +70,20 @@ export const normalizeMockingDate = (
   param: MockingDateParam | undefined,
   globalValue: MockingDateValue | undefined,
 ): NormalizedMockingDate => {
-  const config: MockingDateConfig = isConfig(param) ? param : { now: param };
-  if (config.disable === true) {
+  const {
+    now: requestedNow,
+    fake: requestedFake,
+    disable,
+  } = isConfig(param)
+    ? param
+    : { now: param, fake: undefined, disable: undefined };
+  if (disable === true) {
     return { disabled: true };
   }
-  const now = toDate(globalValue) ?? toDate(config.now);
-  const fake =
-    config.fake !== undefined && config.fake.length > 0
-      ? config.fake
+  const now = toDate(globalValue) ?? toDate(requestedNow);
+  const fake: FakeableTimer[] =
+    requestedFake !== undefined && requestedFake.length > 0
+      ? requestedFake
       : DEFAULT_FAKE;
   return { disabled: false, now, fake };
 };

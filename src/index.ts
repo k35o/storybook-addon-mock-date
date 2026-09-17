@@ -9,11 +9,13 @@ export {
   runAllMockedTimers,
 } from './with-mock-time';
 export type {
+  ClockReader,
   FakeableTimer,
   MockingDateConfig,
   MockingDateParam,
   MockingDateTypes,
   MockingDateValue,
+  SchedulingApi,
   TemporalInstantLike,
 } from './types';
 

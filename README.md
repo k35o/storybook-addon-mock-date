@@ -121,6 +121,8 @@ export const Toast = meta.story({
 
 An explicit `fake` array **replaces** the default entirely, so list the clock readers you still want frozen next to the timers — `fake: ['setTimeout']` fakes only `setTimeout` and leaves `Date` real. When `fake` is omitted (including the scalar form) it defaults to `['Date', 'Temporal', 'Intl']`.
 
+The object form needs a `now` unless `fake` lists scheduling APIs only (`{ fake: ['setTimeout'] }` intercepts the timer and leaves the clock readers real). A `fake` array of clock readers without a date would mock nothing, so the type rejects it.
+
 To keep an API on the real clock, leave it out of an explicit `fake` array — for example when a library trips over the `Intl` fake:
 
 ```ts
@@ -153,25 +155,25 @@ import { advanceMockedTime } from 'storybook-addon-mock-date';
 export const AfterDismiss = meta.story({
   parameters: { mockingDate: { fake: ['setTimeout'] } },
   play: async ({ canvas }) => {
-    advanceMockedTime(4000); // run the auto-dismiss timeout
+    await advanceMockedTime(4000); // run the auto-dismiss timeout
     // assert the dismissed state…
   },
 });
 ```
 
-`runAllMockedTimers()` (drain every scheduled timer) and `getMockedClock()` (the raw `@sinonjs/fake-timers` clock) are exported alongside it for finer control.
+`advanceMockedTime` resolves once the UI has committed and painted what the fired timers changed, so `await` it and assert on the next line. `runAllMockedTimers()` (drain every scheduled timer, then wait the same way) and `getMockedClock()` (the raw `@sinonjs/fake-timers` clock, for finer control) are exported alongside it.
 
-> Import these helpers from `storybook-addon-mock-date` or `storybook-addon-mock-date/preview` — both entries share the decorator's module-level clock. A copy of the addon bundled any other way gets a disconnected instance and a "called without an installed clock" error.
+> Import the helpers from `storybook-addon-mock-date`, the entry `mockDate()` comes from; they share the clock the addon installs. A copy of the addon bundled any other way gets a disconnected instance and a "called without an installed clock" error.
 
 > Advancing has to happen in `play`, not in `beforeEach`: a component registers its timers in an effect that runs _after_ mount, so a `beforeEach`-level tick would fire before any timer exists.
 
 ### Toolbar override
 
-The addon registers a clock icon in the Storybook toolbar. Clicking it opens a popover with a `datetime-local` input and a **Reset to real time** button.
+The addon registers a clock icon in the Storybook toolbar. Clicking it opens a popover with a `datetime-local` input and a **Clear override** button.
 
 ![Toolbar icon and popover](https://raw.githubusercontent.com/k35o/storybook-addon-mock-date/main/.github/screenshots/02-toolbar-open.png)
 
-Picking a date stores it in `globals.mockingDate` and applies the mock immediately to every story you visit, regardless of what `parameters.mockingDate` is set to. Press **Reset to real time** (or clear the input) to drop the override and fall back to the parameter-based mocking.
+Picking a date stores it in `globals.mockingDate` and applies the mock immediately to every story you visit, regardless of what `parameters.mockingDate` is set to. Press **Clear override** (or clear the input) to drop the override and fall back to the parameter-based mocking. To see a story on the real clock, opt it out with `mockingDate: { disable: true }` instead — the toolbar only ever swaps the date.
 
 The full precedence with the toolbar in play is **toolbar (globals) > story > meta > preview**. So a story with its own `parameters.mockingDate` only shows that date until the toolbar override is engaged.
 

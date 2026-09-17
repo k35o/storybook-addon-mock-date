@@ -16,16 +16,3 @@ export const beforeEach: ProjectAnnotations<Renderer>['beforeEach'] = [
 const preview: ProjectAnnotations<Renderer> = { initialGlobals, beforeEach };
 
 export default preview;
-
-export {
-  advanceMockedTime,
-  getMockedClock,
-  runAllMockedTimers,
-} from './with-mock-time';
-export type {
-  FakeableTimer,
-  MockingDateConfig,
-  MockingDateParam,
-  MockingDateValue,
-  TemporalInstantLike,
-} from './types';
