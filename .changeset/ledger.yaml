@@ -11,3 +11,14 @@ storybook-addon-mock-date@3.2.1:
   dir: ""
   intents:
     - factory-runtime-csf-import
+storybook-addon-mock-date@4.0.0:
+  dir: ""
+  intents:
+    - 01-storybook-11-support
+    - 02-fake-temporal-intl-by-default
+    - 03-v4-interface
+    - 04-story-scoped-clock
+    - 05-await-play-helpers
+    - 06-zero-delay-timeouts
+    - clear-native-timers
+    - storybook-add-namespace-types
