@@ -1,5 +1,46 @@
 # v0.5.0 (Wed May 28 2025)
 
+## 4.0.0
+
+### Major Changes
+
+- Support Storybook 11.
+
+  - Requires Storybook 11: `peerDependencies.storybook` is now `^11.0.0`. Stay on 3.x for Storybook 10.
+  - Requires Node.js 22.12 or later (`engines.node` is `>=22.12.0`), matching Storybook 11's own requirement.
+  - The toolbar's date picker now opens through `PopoverProvider` instead of `WithTooltip`, whose click trigger and interactive content Storybook 11 removes. It looks and behaves the same — click the clock icon to open it, press Escape or click outside to close it — and is announced as a dialog named "Mocked date".
+  - CSF Next is Storybook 11's default, so the README now leads with registering `mockDate()` in `.storybook/preview.ts` through `definePreview({ addons: [mockDate()] })`. Once `preview.ts` calls `definePreview`, Storybook ignores the preview annotations that addons register through `main.ts`, so a project registered only in `main.ts` silently runs without the mock. Keep the `main.ts` entry for the toolbar.
+
+- `mockingDate` now freezes every API that reads the current time by default. When `fake` is omitted — the scalar form, the object form without `fake`, and the toolbar override — it defaults to `['Date', 'Temporal', 'Intl']` instead of `['Date']`, so `Temporal.Now` and zero-argument `Intl.DateTimeFormat#format` / `#formatToParts` return the mocked instant too. Scheduling APIs (`setTimeout`, `requestAnimationFrame`, …) stay opt-in.
+
+  - Components that render the current time through `Temporal.Now` or a zero-argument `Intl.DateTimeFormat#format` now show the mocked instant instead of the real time, so their visual snapshots change.
+  - While a story is mocked, `Intl.DateTimeFormat` is a wrapper from `@sinonjs/fake-timers`: a falsy date argument such as `0` formats the mocked instant instead of the epoch, formatters are not `instanceof Intl.DateTimeFormat`, subclasses lose their own methods, and `Intl` polyfills applied after the addon loads are not visible. Import polyfills above `storybook-addon-mock-date` in `.storybook/preview.ts`, or leave `'Intl'` out of `fake` for the stories that need the native formatter.
+  - An explicit `fake` array still replaces the default: `fake: ['Date']` restores the previous behaviour for a story, and a story that adds timers such as `['Date', 'setTimeout']` keeps `Temporal` and `Intl` on the real clock until you list them.
+  - Without `now`, a `fake` array of clock readers alone (`Date`, `Temporal`, `Intl`) no longer starts a clock at the epoch; the story runs on the real clock, as `{ fake: ['Date'] }` did before. Arrays that include a timer API still start the clock at the epoch.
+
+- The object form of `mockingDate`, the package entry points, and the toolbar are tidied up for 4.0.
+
+  - **The object form has three shapes**, and the type rejects everything else: `{ now, fake? }` freezes the clock at `now`; `{ fake: [...scheduling APIs] }` intercepts timers while the clock readers stay real; `{ disable }` opts a story out. `{ fake: ['Date'] }` without a `now` — which mocks nothing — is now a type error. The runtime is unchanged, so untyped CSF 3 stories behave as before. `ClockReader` and `SchedulingApi` are exported next to `FakeableTimer`.
+  - **The helpers and types are exported from the package root only.** `storybook-addon-mock-date/preview` is the preview-annotations entry (`beforeEach`, `initialGlobals`); import `advanceMockedTime`, `runAllMockedTimers`, `getMockedClock` and the types (`MockingDateParam`, `MockingDateConfig`, `MockingDateValue`, `FakeableTimer`, `TemporalInstantLike`) from `storybook-addon-mock-date`, where `mockDate()` comes from.
+  - The toolbar's **Reset to real time** button is now **Clear override**: it drops the toolbar date and falls back to the story's own `mockingDate`, which is what it always did. A story that should run on the real clock uses `mockingDate: { disable: true }`.
+
+- The mock now lives as long as the story. It is installed from a project-level `beforeEach` hook instead of a decorator and removed when Storybook tears the story down.
+
+  - A mocked story no longer leaks its clock into the next one: the next story starts on the native `Date`, `Temporal`, `Intl` and timers, and installs its own mock only if it asks for one.
+  - A story's own `beforeEach` hooks run after the addon's, so they already see the mocked time; `loaders` still run before it and see the real clock.
+  - New `mockingDate: { disable: true }` runs a story on the real clock, ignoring any `mockingDate` inherited from the meta or preview level and any toolbar override. Use it for stories that fake timers themselves (`vi.useFakeTimers()` throws "Can't install fake timers twice" in a mocked story) or that render a library the mock breaks; `disable: false` turns the mock back on inside a disabled meta.
+  - The annotations of the `/preview` entry carry a `beforeEach` hook instead of `decorators`. Projects that spread the entry into a plain-object `preview.ts` or register it through `definePreview` are unaffected.
+
+- `advanceMockedTime` and `runAllMockedTimers` return a promise that resolves once the UI has committed and painted what the fired timers changed. `await` them to assert on the result on the next line without a hand-written `requestAnimationFrame` flush; a call without `await` still advances the clock right away, as in 3.x.
+
+- A zero-delay `setTimeout` now runs on the real timer even when `setTimeout` is faked; only timeouts of at least 1 ms wait for `advanceMockedTime` / `runAllMockedTimers`. user-event, and Testing Library under Storybook's React renderer, wait on a zero-delay timeout inside every interaction and query, so with `setTimeout` faked, `userEvent` calls and `findBy*` / `waitFor` queries in `play` never resolved — in the Storybook UI and under `@storybook/addon-vitest` alike. `Date` still reads the mocked instant inside the callback. Code that defers work with a zero-delay timeout now runs it as a real browser would instead of staying frozen until the clock is advanced.
+
+### Patch Changes
+
+- Stories that fake `clearTimeout` no longer get stuck behind Storybook's loading spinner. Storybook arms its "preparing story" timer with the native `setTimeout` before the addon installs its clock and clears it once the story renders; the faked `clearTimeout` could not cancel that native timer, so it fired after the render and covered the story (seen when navigating to the story from the sidebar). The clock is now installed with `shouldClearNativeTimers`, which hands timers created before it to the native `clearTimeout`.
+
+- Projects set up with `npx storybook add storybook-addon-mock-date` (or migrated by the CSF Next codemod) now type-check. Both register the addon as `import * as storybookAddonMockDate from 'storybook-addon-mock-date/preview'` passed to `definePreview({ addons })`, which failed with TS2559 because the namespace shared no property with `PreviewAddon`. The `/preview` entry now also exports its annotations by name (`beforeEach` and `initialGlobals`). That form still leaves the `mockingDate` parameter untyped; register `mockDate()` from the package root to get the types.
+
 ## 3.2.1
 
 ### Patch Changes
