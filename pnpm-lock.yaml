@@ -186,8 +186,8 @@ importers:
         specifier: next
         version: 11.0.0-alpha.6(@vitest/browser-playwright@5.0.3)(@vitest/browser@5.0.3(vite@8.3.2(@types/node@24.19.1)(esbuild@0.28.2))(vitest@5.0.3))(react@19.3.0)(storybook@11.0.0-alpha.6(@types/react@19.3.0)(react@19.3.0)(vite-plus@0.3.0(@types/node@24.19.1)(@vitest/browser-playwright@5.0.3)(esbuild@0.28.2)(typescript@7.0.2)(vite@8.3.2(@types/node@24.19.1)(esbuild@0.28.2))))(vitest@5.0.3)
       '@storybook/icons':
-        specifier: 2.1.0
-        version: 2.1.0(react@19.3.0)
+        specifier: 2.2.0
+        version: 2.2.0(react@19.3.0)
       '@storybook/react-vite':
         specifier: next
         version: 11.0.0-alpha.6(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(storybook@11.0.0-alpha.6(@types/react@19.3.0)(react@19.3.0)(vite-plus@0.3.0(@types/node@24.19.1)(@vitest/browser-playwright@5.0.3)(esbuild@0.28.2)(typescript@7.0.2)(vite@8.3.2(@types/node@24.19.1)(esbuild@0.28.2))))(typescript@7.0.2)(vite@8.3.2(@types/node@24.19.1)(esbuild@0.28.2))
@@ -1231,6 +1231,11 @@ packages:
 
   '@storybook/icons@2.1.0':
     resolution: {integrity: sha512-Fxh9vYpX9bQqFeHRiY8h2ApeRGDzRSMLwJwNZ/AIRqnyOKHxRKL+yFe+ctEkVJmuptRE9u1Hrn8ZZNHyfDKKNg==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+
+  '@storybook/icons@2.2.0':
+    resolution: {integrity: sha512-FpUB/xizIrV1ILhCIYFo+TtQNN9YEoLjfcnAW0JtOXL+BcM2aisSysI0B54JMWDnljriXySBHgN6ps4s9lb75A==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
@@ -3315,6 +3320,10 @@ snapshots:
   '@storybook/global@5.0.0': {}
 
   '@storybook/icons@2.1.0(react@19.3.0)':
+    dependencies:
+      react: 19.3.0
+
+  '@storybook/icons@2.2.0(react@19.3.0)':
     dependencies:
       react: 19.3.0
 
