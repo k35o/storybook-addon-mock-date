@@ -58,7 +58,7 @@
     "@k8o/oxc-config": "0.3.0",
     "@storybook/addon-docs": "next",
     "@storybook/addon-vitest": "next",
-    "@storybook/icons": "2.1.0",
+    "@storybook/icons": "2.2.0",
     "@storybook/react-vite": "next",
     "@types/node": "24.19.1",
     "@types/react": "19.3.0",
