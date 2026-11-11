@@ -3,6 +3,8 @@ minimumReleaseAgeExclude:
   - '@k8o/*'
   # Renovate security update: vitest@4.1.11
   - vitest@4.1.11
+  # Renovate security update: vite-plus@1.1.0
+  - vite-plus@1.1.0
 
 blockExoticSubdeps: true
 verifyDepsBeforeRun: install
