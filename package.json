@@ -1,6 +1,6 @@
 {
   "name": "storybook-addon-mock-date",
-  "version": "3.2.1",
+  "version": "4.0.0",
   "description": "Storybook addon that mocks the current time — Date, Temporal.Now, and Intl.DateTimeFormat — for individual stories.",
   "keywords": [
     "storybook-addon",
