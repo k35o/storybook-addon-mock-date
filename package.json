@@ -55,25 +55,25 @@
     "@sinonjs/fake-timers": "15.4.0"
   },
   "devDependencies": {
-    "@k8o/oxc-config": "0.3.0",
+    "@k8o/oxc-config": "1.1.0",
     "@storybook/addon-docs": "next",
     "@storybook/addon-vitest": "next",
-    "@storybook/icons": "2.1.0",
+    "@storybook/icons": "2.2.0",
     "@storybook/react-vite": "next",
-    "@types/node": "24.19.1",
+    "@types/node": "26.6.6",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
-    "@vitejs/plugin-react": "6.1.1",
-    "@vitest/browser-playwright": "5.0.3",
-    "npm-run-all2": "9.0.3",
-    "playwright": "1.63.0",
-    "react": "19.3.0",
-    "react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.3.0",
+    "@vitest/browser-playwright": "5.1.0",
+    "npm-run-all2": "9.0.4",
+    "playwright": "1.65.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
     "storybook": "next",
     "typescript": "7.0.2",
-    "vite": "8.3.2",
-    "vite-plus": "0.3.0",
-    "vitest": "5.0.3"
+    "vite": "npm:@voidzero-dev/vite-plus-core@1.5.1",
+    "vite-plus": "1.5.1",
+    "vitest": "5.1.0"
   },
   "peerDependencies": {
     "storybook": "^11.0.0"
@@ -81,7 +81,7 @@
   "engines": {
     "node": ">=22.12.0"
   },
-  "packageManager": "pnpm@12.9.0",
+  "packageManager": "pnpm@12.18.0",
   "storybook": {
     "displayName": "Mocking Date",
     "icon": "https://raw.githubusercontent.com/k35o/storybook-addon-mock-date/main/.github/icon.png"

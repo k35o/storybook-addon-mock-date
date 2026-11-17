@@ -16,7 +16,12 @@
       "groupName": "tsup dependencies"
     },
     {
-      "matchPackageNames": ["vite-plus"],
+      "matchPackageNames": [
+        "vite-plus",
+        "@voidzero-dev/vite-plus-core",
+        "vitest",
+        "/^@vitest\\//"
+      ],
       "groupName": "vite-plus dependencies"
     },
     {

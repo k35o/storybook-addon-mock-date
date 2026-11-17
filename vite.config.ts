@@ -46,6 +46,14 @@ export default defineConfig({
           'typescript/no-unsafe-assignment': 'off',
         },
       },
+      {
+        // The story fixtures read the clock during render on purpose: that
+        // read is what the addon mocks.
+        files: ['src/stories/**/*.tsx'],
+        rules: {
+          'react/purity': 'off',
+        },
+      },
     ],
   },
   staged: {
