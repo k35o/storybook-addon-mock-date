@@ -1,5 +1,15 @@
 # v0.5.0 (Wed May 28 2025)
 
+## 3.2.2
+
+### Patch Changes
+
+- Stories that fake `clearTimeout` no longer get stuck behind Storybook's loading spinner. Storybook arms its "preparing story" timer with the native `setTimeout` before the decorator runs and clears it once the story renders; the faked `clearTimeout` could not cancel that native timer, so it fired after the render and covered the story (seen when navigating to the story from the sidebar). The clock is now installed with `shouldClearNativeTimers`, which hands timers created before it to the native `clearTimeout`.
+
+- Projects set up with `npx storybook add storybook-addon-mock-date` (or migrated by the CSF Next codemod) now type-check. Both register the addon as `import * as storybookAddonMockDate from 'storybook-addon-mock-date/preview'` passed to `definePreview({ addons })`, which failed with TS2559 because the namespace shared no property with `PreviewAddon`. The `/preview` entry now exports `decorators` and `initialGlobals` alongside its default export. That form still leaves the `mockingDate` parameter untyped; register `mockDate()` from the package root to get the types.
+
+- The toolbar's **Reset to real time** button is now **Clear override**: it drops the toolbar date and falls back to the story's own `mockingDate`, which is what it always did. The story runs on the real clock only when it sets no `mockingDate`.
+
 ## 3.2.1
 
 ### Patch Changes

@@ -11,3 +11,9 @@ storybook-addon-mock-date@3.2.1:
   dir: ""
   intents:
     - factory-runtime-csf-import
+storybook-addon-mock-date@3.2.2:
+  dir: ""
+  intents:
+    - clear-native-timers
+    - storybook-add-namespace-types
+    - toolbar-clear-override-label
