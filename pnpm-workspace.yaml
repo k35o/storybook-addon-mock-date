@@ -11,9 +11,9 @@ allowBuilds:
 
 # Moved from package.json "overrides" (storybook: $storybook): pnpm 11 does not
 # read overrides from package.json, and the "$" reference syntax is deprecated,
-# so the "next" tag is written out to match the storybook devDependency.
+# so the version is written out to match the storybook devDependency.
 overrides:
-  storybook: next
+  storybook: 10.6.7
 
 versioning:
   changelog:
