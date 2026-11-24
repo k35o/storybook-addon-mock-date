@@ -18,10 +18,10 @@ export const Christmas = meta.story({
 
 ## Installation
 
-First, install the package.
+First, install the package. 4.0 is in beta, so install it from the `beta` dist-tag; the `latest` dist-tag still holds 3.x for Storybook 10.
 
 ```sh
-npm install --save-dev storybook-addon-mock-date
+npm install --save-dev storybook-addon-mock-date@beta
 ```
 
 Then, register it in two places: `.storybook/preview.ts` installs the mock, and `.storybook/main.ts` adds the toolbar.
