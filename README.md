@@ -98,7 +98,7 @@ const preview: Preview = {
 export default preview;
 ```
 
-A story whose merged `mockingDate` is `undefined` reverts the system clock to the moment the preview iframe loaded, so subsequent stories continue to see a deterministic value rather than continuing to drift forward.
+A story whose merged `mockingDate` is `undefined` runs on the real clock: the decorator uninstalls the fake one, so `Date` and any timers an earlier story faked go back to their native implementations.
 
 ### Faking other timers
 
@@ -134,6 +134,10 @@ export const ChristmasBanner: Story = {
 
 > **rAF needs `performance`.** Animation libraries (framer-motion, react-spring, GSAP, Lottie, three.js) compute their delta from `performance.now()`, so fake `requestAnimationFrame` **and** `performance` together — faking rAF alone leaves the solver with a zero/NaN delta.
 
+> **Faking `setTimeout` also freezes Storybook's own timers.** After `play`, Storybook waits on `setTimeout` before it reports the story as rendered, so in the Storybook UI such a story never finishes rendering: the Interactions panel stays on "RUNS" without listing any step, and `STORY_RENDERED` is never emitted, so anything waiting for that event waits forever. Tests run through `@storybook/addon-vitest` take a different path and are unaffected. If a tool captures stories by waiting for `STORY_RENDERED`, leave `setTimeout` real in the stories it has to capture.
+
+> **Don't mix in `vi.useFakeTimers()`.** The addon installs `@sinonjs/fake-timers` itself and keeps its clock installed between stories, so `vi.useFakeTimers()` in a Storybook that relies on its mocking fails with "Can't install fake timers twice on the same global object" — even in a story the addon doesn't mock. Fake timers through the `fake` option and advance them with `advanceMockedTime` / `runAllMockedTimers` instead.
+
 ### Advancing time in `play`
 
 Faking a timer _freezes_ it. To reach a settled "after" state (a dismissed toast, a finished count-up, an elapsed countdown), advance the clock from a story's `play` function with `advanceMockedTime` — **after** the component has mounted and registered its timers:
@@ -158,11 +162,11 @@ export const AfterDismiss: Story = {
 
 ### Toolbar override
 
-The addon registers a clock icon in the Storybook toolbar. Clicking it opens a popover with a `datetime-local` input and a **Reset to real time** button.
+The addon registers a clock icon in the Storybook toolbar. Clicking it opens a popover with a `datetime-local` input and a **Clear override** button.
 
 ![Toolbar icon and popover](https://raw.githubusercontent.com/k35o/storybook-addon-mock-date/main/.github/screenshots/02-toolbar-open.png)
 
-Picking a date stores it in `globals.mockingDate` and applies the mock immediately to every story you visit, regardless of what `parameters.mockingDate` is set to. Press **Reset to real time** (or clear the input) to drop the override and fall back to the parameter-based mocking.
+Picking a date stores it in `globals.mockingDate` and applies the mock immediately to every story you visit, regardless of what `parameters.mockingDate` is set to. Press **Clear override** (or clear the input) to drop the override and fall back to the parameter-based mocking.
 
 The full precedence with the toolbar in play is **toolbar (globals) > story > meta > preview**. So a story with its own `parameters.mockingDate` only shows that date until the toolbar override is engaged.
 
