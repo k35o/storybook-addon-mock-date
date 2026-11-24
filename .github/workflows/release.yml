@@ -37,7 +37,7 @@ jobs:
         uses: ./.github/composite-actions/install
 
       - name: Release
-        uses: k35o/pnpm-release-action@5e009384bf5b1d2501f8405817b5d5578a90624e # v0.2.2
+        uses: k35o/pnpm-release-action@463841fa0c4d1aa694a6e44332c08aad150581ad # v0.3.0
         with:
           build: pnpm build
           github-token: ${{ steps.app-token.outputs.token }}
