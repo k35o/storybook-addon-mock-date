@@ -12,7 +12,7 @@ export const Christmas = meta.story({
 
 ## Requirements
 
-- Storybook `^11.0.0` (stay on 3.x for Storybook 10)
+- Storybook 11, prereleases included (`^11.0.0-0`; stay on 3.x for Storybook 10)
 - Node.js `>=22.12.0` (Storybook 11's own requirement)
 - Renderer-agnostic — the addon installs the mock from a preview `beforeEach` hook, which works with any Storybook framework (React, Vue, Svelte, etc.)
 
