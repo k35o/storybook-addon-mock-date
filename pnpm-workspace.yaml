@@ -18,5 +18,7 @@ overrides:
   storybook: next
 
 versioning:
+  lanes:
+    storybook-addon-mock-date: beta
   changelog:
     storage: repository
