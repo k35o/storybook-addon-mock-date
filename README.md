@@ -12,16 +12,16 @@ export const Christmas = meta.story({
 
 ## Requirements
 
-- Storybook `^11.0.0` (stay on 3.x for Storybook 10)
+- Storybook 11, prereleases included (`^11.0.0-0`; stay on 3.x for Storybook 10)
 - Node.js `>=22.12.0` (Storybook 11's own requirement)
 - Renderer-agnostic — the addon installs the mock from a preview `beforeEach` hook, which works with any Storybook framework (React, Vue, Svelte, etc.)
 
 ## Installation
 
-First, install the package.
+First, install the package. 4.0 is in beta, so install it from the `beta` dist-tag; the `latest` dist-tag still holds 3.x for Storybook 10.
 
 ```sh
-npm install --save-dev storybook-addon-mock-date
+npm install --save-dev storybook-addon-mock-date@beta
 ```
 
 Then, register it in two places: `.storybook/preview.ts` installs the mock, and `.storybook/main.ts` adds the toolbar.
