@@ -49,6 +49,8 @@ export default definePreview({
 
 This also types the `mockingDate` parameter and global in `preview.meta()` and `meta.story()`. The `advanceMockedTime` / `runAllMockedTimers` / `getMockedClock` helpers can then be imported from the package root — it shares the clock with the `/preview` entry.
 
+`npx storybook add storybook-addon-mock-date` also works. It adds the `main.ts` entry and puts `import * as storybookAddonMockDate from 'storybook-addon-mock-date/preview'` into `definePreview`'s `addons`, which applies the decorator but leaves `mockingDate` untyped — replace it with `mockDate()` to get the types.
+
 ## Usage
 
 Pass a `Date`, a millisecond timestamp, an ISO 8601 string, or a `Temporal.Instant` / `Temporal.ZonedDateTime` via the `mockingDate` parameter at the story, meta, or preview level. Storybook merges parameters with the most specific value winning, so the precedence is **story > meta > preview**.
