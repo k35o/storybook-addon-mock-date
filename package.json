@@ -52,7 +52,7 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
-    "@sinonjs/fake-timers": "15.4.0"
+    "@sinonjs/fake-timers": "15.5.0"
   },
   "devDependencies": {
     "@k8o/oxc-config": "1.1.0",
@@ -65,8 +65,8 @@
     "@types/react-dom": "19.3.0",
     "@vitejs/plugin-react": "6.3.0",
     "@vitest/browser-playwright": "5.1.0",
-    "npm-run-all2": "9.0.4",
-    "playwright": "1.65.0",
+    "npm-run-all2": "9.1.0",
+    "playwright": "1.65.1",
     "react": "19.3.1",
     "react-dom": "19.3.1",
     "storybook": "next",
